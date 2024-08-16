@@ -26,7 +26,7 @@ export default function PurchasingInChina() {
             date: new Date().toLocaleDateString()
         };
         try {
-            await axios.post('http://localhost:3000/api/purchase-history/save', newEntry);
+            await axios.post('https://imdad-pharma-api.vercel.app/api/purchase-history/save', newEntry);
             setHistory([...history, newEntry]);
             setFilteredHistory([...history, newEntry]);
         } catch (error) {
@@ -37,7 +37,7 @@ export default function PurchasingInChina() {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/api/purchase-history');
+                const response = await axios.get('https://imdad-pharma-api.vercel.app/api/purchase-history');
                 setHistory(response.data);
                 setFilteredHistory(response.data);
             } catch (error) {
