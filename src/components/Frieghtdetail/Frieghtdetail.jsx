@@ -29,7 +29,7 @@ export default function FreightDetail() {
 
   const fetchFreightHistory = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/freight');
+      const response = await axios.get('https://imdad-pharma-api.vercel.app/api/freight');
       setHistory(response.data);
     } catch (error) {
       console.error('Error fetching freight history:', error);
@@ -44,7 +44,7 @@ export default function FreightDetail() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/freight', details);
+      await axios.post('https://imdad-pharma-api.vercel.app/api/freight', details);
       fetchFreightHistory();
       setDetails({
         shipmentNumber: '',
