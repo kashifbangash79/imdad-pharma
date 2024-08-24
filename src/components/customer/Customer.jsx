@@ -26,7 +26,7 @@ const Customer = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/customers');
+      const response = await axios.get('https://imdad-pharma-api.vercel.app/api/customers');
       setCustomers(response.data);
     } catch (err) {
       console.error('Error fetching customers:', err);
@@ -56,9 +56,9 @@ const Customer = () => {
     e.preventDefault();
     try {
       if (form.id) {
-        await axios.put(`http://localhost:3000/api/customers/${form.id}`, form);
+        await axios.put(`https://imdad-pharma-api.vercel.app/api/customers/${form.id}`, form);
       } else {
-        await axios.post('http://localhost:3000/api/customers', form);
+        await axios.post('https://imdad-pharma-api.vercel.app/api/customers', form);
       }
       fetchCustomers();
     } catch (err) {

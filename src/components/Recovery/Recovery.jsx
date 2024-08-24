@@ -16,7 +16,7 @@ const Recovery = () => {
 
   useEffect(() => {
     if (showHistory) {
-      axios.get('http://localhost:3000/recoveries')
+      axios.get('https://imdad-pharma-api.vercel.app/recoveries')
         .then(response => {
           setRecoveries(response.data);
           setFilteredRecoveries(response.data); // Initialize filteredRecoveries
@@ -46,7 +46,7 @@ const Recovery = () => {
 
     setError('');
 
-    axios.post('http://localhost:3000/recoveries/add', form)
+    axios.post('https://imdad-pharma-api.vercel.app/recoveries/add', form)
       .then(response => {
         const newRecovery = response.data;
         setRecoveries([...recoveries, newRecovery]);

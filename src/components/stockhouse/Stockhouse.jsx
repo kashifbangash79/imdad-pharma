@@ -18,7 +18,7 @@ const Stockhouse = () => {
 
   const fetchStock = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/stocks');
+      const response = await axios.get('https://imdad-pharma-api.vercel.app/api/stocks');
       setStock(response.data);
     } catch (error) {
       console.error('Error fetching stock data:', error);
@@ -35,14 +35,14 @@ const Stockhouse = () => {
 
     if (form.id) {
       try {
-        await axios.put(`http://localhost:3000/api/stocks/${form.id}`, form);
+        await axios.put(`https://imdad-pharma-api.vercel.app/api/stocks/${form.id}`, form);
         fetchStock();
       } catch (error) {
         console.error('Error updating stock entry:', error);
       }
     } else {
       try {
-        await axios.post('http://localhost:3000/api/stocks', form);
+        await axios.post('https://imdad-pharma-api.vercel.app/api/stocks', form);
         fetchStock();
       } catch (error) {
         console.error('Error adding stock entry:', error);
