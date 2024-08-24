@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function PurchasingInChina() {
+export default function Purchase() {
     const [amountInPKR, setAmountInPKR] = useState(100000);
     const [conversionRate, setConversionRate] = useState(283);
     const [history, setHistory] = useState([]);

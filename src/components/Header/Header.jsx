@@ -15,18 +15,14 @@ export default function Header() {
   };
 
   return (
-    <header className="shadow sticky z-50 top-0">
-      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
-        <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <div>
-            <Link to="/" className="flex items-center">
-              <img
-                src="https://alexharkness.com/wp-content/uploads/2020/06/logo-2.png"
-                className="mr-3 h-12"
-                alt="Logo"
-              />
-            </Link>
-          </div>
+    <header className="shadow sticky z-50 top-0 bg-white">
+      <nav className="border-gray-200 px-4 lg:px-6 py-2.5 max-w-screen-xl mx-auto">
+        <div className="flex flex-wrap justify-between items-center">
+          <Link to="/" className="flex items-center">
+            <p className="text-4xl font-bold text-red-600 uppercase tracking-wider">
+              IMDAD
+            </p>
+          </Link>
           <div className="flex items-center lg:order-2">
             <Link
               to="/logout"
@@ -34,7 +30,6 @@ export default function Header() {
             >
               Log Out
             </Link>
-           
             <button
               data-collapse-toggle="mobile-menu"
               type="button"
@@ -62,7 +57,7 @@ export default function Header() {
             </button>
           </div>
           <div
-            className={`lg:flex lg:w-auto ${isOpen ? "block" : "hidden"}`}
+            className={`lg:flex lg:w-auto ${isOpen ? "block" : "hidden"} lg:order-1 lg:flex-grow`}
             id="mobile-menu"
           >
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-6 lg:mt-0">
@@ -81,7 +76,7 @@ export default function Header() {
               </li>
               <li>
                 <NavLink
-                  to="/PurchaseInChina"
+                  to="/purchase"
                   onClick={handleNavLinkClick}
                   className={({ isActive }) =>
                     `block py-2 pr-4 pl-3 duration-200 ${
@@ -89,21 +84,58 @@ export default function Header() {
                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
                 >
-                  PurchaseInChina
+                  Purchase
                 </NavLink>
               </li>
-              <li>
+              <li className="relative group">
                 <NavLink
-                  to="/AgentPayment"
-                  onClick={handleNavLinkClick}
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-orange-700" : "text-gray-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                  }
+                  to="#"
+                  className="block py-2 pr-4 pl-3 duration-200 text-gray-700 hover:text-orange-700"
+                  onClick={(e) => e.preventDefault()} // Prevent default navigation
                 >
-                  AgentPayment
+                  Payments <span className="ml-2 text-gray-500">&#9660;</span>
                 </NavLink>
+                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block">
+                  <li>
+                    <NavLink
+                      to="/payment"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      Payment
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/AgentPayment"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      Agent Payment
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/convertor"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      Currency Convertor
+                    </NavLink>
+                  </li>
+                </ul>
               </li>
               <li>
                 <NavLink
@@ -128,7 +160,7 @@ export default function Header() {
                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
                 >
-                  stockhouse
+                  Stockhouse
                 </NavLink>
               </li>
               <li>
