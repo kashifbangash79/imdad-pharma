@@ -270,89 +270,94 @@ const Payment = () => {
       </form>
 
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Search Cash Payments</h2>
-        <input
-          type="text"
-          value={cashSearchQuery}
-          onChange={(e) => setCashSearchQuery(e.target.value)}
-          placeholder="Search by Payer Name or Amount"
-          className="border p-2 w-full rounded"
-        />
-        <table className="w-full mt-4 border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 p-2">Entry No.</th>
-              <th className="border border-gray-300 p-2">Payer Name</th>
-              <th className="border border-gray-300 p-2">Amount</th>
-              <th className="border border-gray-300 p-2">Recipient Name</th>
-              <th className="border border-gray-300 p-2">Next Recipient</th>
-              <th className="border border-gray-300 p-2">Transaction Date</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCashPayers.map((payment, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td className="border border-gray-300 p-2">{payment.payerName}</td>
-                <td className="border border-gray-300 p-2">{payment.cashAmount}</td>
-                <td className="border border-gray-300 p-2">{payment.recipientName}</td>
-                <td className="border border-gray-300 p-2">{payment.nextRecipient}</td>
-                <td className="border border-gray-300 p-2">{payment.transactionDate}</td>
-                <td className="border border-gray-300 p-2">
-                  <button onClick={() => handleEditCash(index)} className="bg-yellow-500 text-white p-1 rounded hover:bg-yellow-600">
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  <h2 className="text-xl font-semibold mb-4">Search Cash Payments</h2>
+  <input
+    type="text"
+    value={cashSearchQuery}
+    onChange={(e) => setCashSearchQuery(e.target.value)}
+    placeholder="Search by Payer Name or Amount"
+    className="border p-2 w-full rounded"
+  />
+  <div className="overflow-x-auto">
+    <table className="w-full mt-4 border-collapse border border-gray-300">
+      <thead>
+        <tr>
+          <th className="border border-gray-300 p-2">Entry No.</th>
+          <th className="border border-gray-300 p-2">Payer Name</th>
+          <th className="border border-gray-300 p-2">Amount</th>
+          <th className="border border-gray-300 p-2">Recipient Name</th>
+          <th className="border border-gray-300 p-2">Next Recipient</th>
+          <th className="border border-gray-300 p-2">Transaction Date</th>
+          <th className="border border-gray-300 p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredCashPayers.map((payment, index) => (
+          <tr key={index}>
+            <td className="border border-gray-300 p-2">{index + 1}</td>
+            <td className="border border-gray-300 p-2">{payment.payerName}</td>
+            <td className="border border-gray-300 p-2">{payment.cashAmount}</td>
+            <td className="border border-gray-300 p-2">{payment.recipientName}</td>
+            <td className="border border-gray-300 p-2">{payment.nextRecipient}</td>
+            <td className="border border-gray-300 p-2">{payment.transactionDate}</td>
+            <td className="border border-gray-300 p-2">
+              <button onClick={() => handleEditCash(index)} className="bg-yellow-500 text-white p-1 rounded hover:bg-yellow-600">
+                Edit
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Search Bank Payments</h2>
-        <input
-          type="text"
-          value={bankSearchQuery}
-          onChange={(e) => setBankSearchQuery(e.target.value)}
-          placeholder="Search by Bank Name, Sender Name, or Recipient Name"
-          className="border p-2 w-full rounded"
-        />
-        <table className="w-full mt-4 border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 p-2">Entry No.</th>
-              <th className="border border-gray-300 p-2">Bank Name</th>
-              <th className="border border-gray-300 p-2">Amount</th>
-              <th className="border border-gray-300 p-2">Recipient Name</th>
-              <th className="border border-gray-300 p-2">Next Recipient</th>
-              <th className="border border-gray-300 p-2">Transaction Date</th>
-              <th className="border border-gray-300 p-2">Sender Name</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredBankTransactions.map((transaction, index) => (
-              <tr key={transaction.id}>
-                <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td className="border border-gray-300 p-2">{transaction.selectedBank}</td>
-                <td className="border border-gray-300 p-2">{transaction.bankAmount}</td>
-                <td className="border border-gray-300 p-2">{transaction.recipientName}</td>
-                <td className="border border-gray-300 p-2">{transaction.nextRecipient}</td>
-                <td className="border border-gray-300 p-2">{transaction.transactionDate}</td>
-                <td className="border border-gray-300 p-2">{transaction.senderName}</td>
-                <td className="border border-gray-300 p-2">
-                  <button onClick={() => handleEditBank(transaction.id)} className="bg-yellow-500 text-white p-1 rounded hover:bg-yellow-600">
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div className="mb-8">
+  <h2 className="text-xl font-semibold mb-4">Search Bank Payments</h2>
+  <input
+    type="text"
+    value={bankSearchQuery}
+    onChange={(e) => setBankSearchQuery(e.target.value)}
+    placeholder="Search by Bank Name, Sender Name, or Recipient Name"
+    className="border p-2 w-full rounded"
+  />
+  <div className="overflow-x-auto">
+    <table className="w-full mt-4 border-collapse border border-gray-300">
+      <thead>
+        <tr>
+          <th className="border border-gray-300 p-2">Entry No.</th>
+          <th className="border border-gray-300 p-2">Bank Name</th>
+          <th className="border border-gray-300 p-2">Amount</th>
+          <th className="border border-gray-300 p-2">Recipient Name</th>
+          <th className="border border-gray-300 p-2">Next Recipient</th>
+          <th className="border border-gray-300 p-2">Transaction Date</th>
+          <th className="border border-gray-300 p-2">Sender Name</th>
+          <th className="border border-gray-300 p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredBankTransactions.map((transaction, index) => (
+          <tr key={transaction.id}>
+            <td className="border border-gray-300 p-2">{index + 1}</td>
+            <td className="border border-gray-300 p-2">{transaction.selectedBank}</td>
+            <td className="border border-gray-300 p-2">{transaction.bankAmount}</td>
+            <td className="border border-gray-300 p-2">{transaction.recipientName}</td>
+            <td className="border border-gray-300 p-2">{transaction.nextRecipient}</td>
+            <td className="border border-gray-300 p-2">{transaction.transactionDate}</td>
+            <td className="border border-gray-300 p-2">{transaction.senderName}</td>
+            <td className="border border-gray-300 p-2">
+              <button onClick={() => handleEditBank(transaction.id)} className="bg-yellow-500 text-white p-1 rounded hover:bg-yellow-600">
+                Edit
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+
   );
 };
 
