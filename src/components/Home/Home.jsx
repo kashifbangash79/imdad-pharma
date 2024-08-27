@@ -79,6 +79,7 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+            
                     <h3 className="text-lg font-medium">Today Received</h3>
                     <p className="text-2xl font-bold text-blue-600">
                         {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
