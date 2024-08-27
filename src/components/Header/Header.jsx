@@ -19,7 +19,7 @@ export default function Header() {
       <nav className="border-gray-200 px-4 lg:px-6 py-2.5 max-w-screen-xl mx-auto">
         <div className="flex flex-wrap justify-between items-center">
           <Link to="/" className="flex items-center">
-            <p className="text-4xl font-bold text-red-600 uppercase tracking-wider">
+            <p className="text-3 font-bold text-red-600 tracking-wider">
               IMDAD
             </p>
           </Link>
@@ -106,7 +106,20 @@ export default function Header() {
                         } hover:bg-gray-50`
                       }
                     >
-                      Payment
+                      Recieved Payment
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/sendPayment"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      Send Payment
                     </NavLink>
                   </li>
                   <li>
@@ -120,19 +133,6 @@ export default function Header() {
                       }
                     >
                       Agent Payment
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/convertor"
-                      onClick={handleNavLinkClick}
-                      className={({ isActive }) =>
-                        `block py-2 px-4 duration-200 ${
-                          isActive ? "text-orange-700" : "text-gray-700"
-                        } hover:bg-gray-50`
-                      }
-                    >
-                      Currency Convertor
                     </NavLink>
                   </li>
                 </ul>

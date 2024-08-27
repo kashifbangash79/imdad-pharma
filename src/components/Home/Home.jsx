@@ -1,7 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Home() {
+    // States to hold amounts fetched from the database
+    const [totalAmount, setTotalAmount] = useState(1000000);
+    const [todayReceived, setTodayReceived] = useState(400000);
+    const [todaySent, setTodaySent] = useState(456970);
+
+    // Fetch data from the database
+    useEffect(() => {
+        // Replace with your API calls to fetch the data
+        fetch('/api/amounts')
+            .then(response => response.json())
+            .then(data => {
+                setTotalAmount(data.totalAmount);
+                setTodayReceived(data.todayReceived);
+                setTodaySent(data.todaySent);
+            });
+    }, []);
+
+    const arrowUp = (
+        <svg className="w-6 h-6 inline-block text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 5a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L11 7.414V14a1 1 0 11-2 0V7.414L7.707 9.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 5z" clipRule="evenodd" />
+        </svg>
+    );
+
+    const arrowDown = (
+        <svg className="w-6 h-6 inline-block text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M10 15a1 1 0 01-.707-.293l-3-3a1 1 0 111.414-1.414L9 12.586V6a1 1 0 112 0v6.586l1.293-1.293a1 1 0 111.414 1.414l-3 3A1 1 0 0110 15z" clipRule="evenodd" />
+        </svg>
+    );
+
     return (
         <div className="mx-auto w-full max-w-7xl">
             <aside className="relative overflow-hidden text-black rounded-lg sm:mx-16 mx-2 sm:py-16">
@@ -41,6 +70,27 @@ export default function Home() {
             </div>
 
             <h1 className="text-center text-2xl sm:text-5xl py-10 font-medium">IMDAD PHARMA 💊</h1>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
+                <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+                    <h3 className="text-lg font-medium">Total Amount</h3>
+                    <p className="text-2xl font-bold text-green-600">
+                        {totalAmount >= 0 ? arrowUp : arrowDown} ${totalAmount}
+                    </p>
+                </div>
+                <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+                    <h3 className="text-lg font-medium">Today Received</h3>
+                    <p className="text-2xl font-bold text-blue-600">
+                        {todayReceived >= 0 ? arrowUp : arrowDown} ${todayReceived}
+                    </p>
+                </div>
+                <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+                    <h3 className="text-lg font-medium">Today Sent</h3>
+                    <p className="text-2xl font-bold text-red-600">
+                        {todaySent >= 0 ? arrowUp : arrowDown} ${todaySent}
+                    </p>
+                </div>
+            </div>
         </div>
     );
 }

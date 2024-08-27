@@ -13,9 +13,8 @@ import Register from './components/Login/Register.jsx';
 import Login from './components/Login/Login.jsx';
 import DubaiPortExpenses from './components/DubaiPortExpenses/DubaiPortExpenses.jsx';
 import Payment from './components/Payment/Payment.js';
-import Convertor from './components/currencyConvertor/convertor.js';
-
 import './index.css';
+import SendPayment from './components/Payment/SendPayment.js';
 
 function App() {
   return (
@@ -34,7 +33,7 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           <Route path='/DubaiPortExpenses' element={<DubaiPortExpenses/>}/>
           <Route path='/payment' element= {<Payment />}/>
-          <Route path='/convertor' element = {<Convertor />}/>
+          <Route path='/sendPayment' element= {<SendPayment />} />
           </Route>
         </Routes>
       

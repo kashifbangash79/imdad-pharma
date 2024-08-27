@@ -2,14 +2,25 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export default function Purchase() {
-    const [amountInPKR, setAmountInPKR] = useState(100000);
-    const [conversionRate, setConversionRate] = useState(283);
+    const [amountInPKR, setAmountInPKR] = useState('');
+    const [conversionRate, setConversionRate] = useState('');
     const [history, setHistory] = useState([]);
     const [filteredHistory, setFilteredHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCurrency, setSelectedCurrency] = useState(''); // Default to USD
 
-    const amountInUSD = (amountInPKR / conversionRate).toFixed(2);
+    const currencySymbols = {
+        USD: '$',
+        CNY: '¥',
+        AED: 'AED',
+        SAR: 'SAR',
+        AFN: 'AFN',
+        EUR: '€'
+    };
+
+    const amountInSelectedCurrency = (amountInPKR / conversionRate).toFixed(2);
+    const selectedCurrencySymbol = currencySymbols[selectedCurrency];
 
     const handlePKRChange = (event) => {
         setAmountInPKR(event.target.value);
@@ -21,12 +32,15 @@ export default function Purchase() {
 
     const handleSave = async () => {
         const newEntry = {
-            pkr: amountInPKR,
-            usd: amountInUSD,
-            date: new Date().toLocaleDateString()
+            pkr: amountInPKR, // The amount in PKR
+            amountInSelectedCurrency, // The amount in the selected currency (USD, etc.)
+            selectedCurrency, // Replace with the actual selected currency from the dropdown
+            selectedCurrencySymbol, // Replace with the actual currency symbol from the dropdown
+            date: new Date().toLocaleDateString() // The current date
         };
+        
         try {
-            await axios.post('https://imdad-pharma-api.vercel.app/api/purchase-history/save', newEntry);
+            await axios.post('http://localhost:5000/api/purchase-history/save', newEntry);
             setHistory([...history, newEntry]);
             setFilteredHistory([...history, newEntry]);
         } catch (error) {
@@ -37,7 +51,8 @@ export default function Purchase() {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const response = await axios.get('https://imdad-pharma-api.vercel.app/api/purchase-history');
+                const response = await axios.get('http://localhost:5000/api/purchase-history');
+                console.log(response.data);
                 setHistory(response.data);
                 setFilteredHistory(response.data);
             } catch (error) {
@@ -55,30 +70,53 @@ export default function Purchase() {
     const handleSearch = (event) => {
         const value = event.target.value;
         setSearchTerm(value);
+    
         const filtered = history.filter(entry =>
-            entry.date.includes(value) ||
-            entry.pkr.toString().includes(value) ||
-            entry.usd.toString().includes(value)
+            (entry.date && entry.date.includes(value)) ||
+            (entry.pkr !== undefined && entry.pkr.toString().includes(value)) ||
+            (entry.amountInSelectedCurrency !== undefined && entry.amountInSelectedCurrency.toString().includes(value))
         );
+    
         setFilteredHistory(filtered);
     };
+    
 
     return (
         <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
             <section className="mb-10">
                 <h2 className="text-4xl font-bold text-gray-800 mb-6">Purchasing in China</h2>
                 <p className="text-lg text-gray-600 mb-6">
-                    For Imdad Pharma, understanding the currency conversion rates between Pakistani Rupee (PKR) and US Dollar (USD) is crucial for accurate budgeting and financial planning.
+                    For Imdad Pharma, understanding the currency conversion rates between Pakistani Rupee (PKR) and various currencies is crucial for accurate budgeting and financial planning.
                 </p>
 
                 <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
                     <h3 className="text-2xl font-semibold text-gray-700 mb-4">Conversion Details</h3>
                     <p className="text-lg text-gray-600 mb-4">
-                        <strong>Current Conversion Rate:</strong> 1 USD = {conversionRate} PKR
+                        <strong>Current Conversion Rate:</strong> 1 {selectedCurrency} = {conversionRate} PKR
                     </p>
+
+                    <div className="mb-6">
+                        <label htmlFor="currency" className="block text-lg font-medium text-gray-700 mb-2">
+                            Select Currency:
+                        </label>
+                        <select
+                            id="currency"
+                            value={selectedCurrency}
+                            onChange={(e) => setSelectedCurrency(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
+                        >
+                            <option value="USD">USD</option>
+                            <option value="CNY">Chinese Yuan</option>
+                            <option value="AED">Dirham</option>
+                            <option value="SAR">Riyal</option>
+                            <option value="AFN">Afghan Afghani</option>
+                            <option value="EUR">Euro</option>
+                        </select>
+                    </div>
+
                     <div className="mb-6">
                         <label htmlFor="conversionRate" className="block text-lg font-medium text-gray-700 mb-2">
-                            Enter Conversion Rate (PKR to USD):
+                            Enter Conversion Rate (PKR to {selectedCurrency}):
                         </label>
                         <input
                             id="conversionRate"
@@ -88,6 +126,7 @@ export default function Purchase() {
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                     </div>
+
                     <div className="mb-6">
                         <label htmlFor="pkrAmount" className="block text-lg font-medium text-gray-700 mb-2">
                             Enter Amount in PKR:
@@ -100,11 +139,13 @@ export default function Purchase() {
                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                         />
                     </div>
+
                     <p className="text-lg text-gray-600 mb-4">
                         <strong>Equivalent Amount:</strong>
                         <br />
-                        <strong>{amountInPKR.toLocaleString()} PKR</strong> is approximately <strong>${amountInUSD}</strong> USD.
+                        <strong>{amountInPKR.toLocaleString()} PKR</strong> is approximately <strong>{selectedCurrencySymbol}{amountInSelectedCurrency} {selectedCurrency}</strong>.
                     </p>
+
                     <div className="flex space-x-4">
                         <button
                             onClick={handleSave}
@@ -156,7 +197,7 @@ export default function Purchase() {
                                                     <th className="p-2 border-b text-sm sm:text-base">Entry Number</th>
                                                     <th className="p-2 border-b text-sm sm:text-base">Date</th>
                                                     <th className="p-2 border-b text-sm sm:text-base">Amount (PKR)</th>
-                                                    <th className="p-2 border-b text-sm sm:text-base">Amount (USD)</th>
+                                                    <th className="p-2 border-b text-sm sm:text-base">Amount</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -165,7 +206,7 @@ export default function Purchase() {
                                                         <td className="p-2 border-b text-sm sm:text-base">{index + 1}</td>
                                                         <td className="p-2 border-b text-sm sm:text-base">{entry.date}</td>
                                                         <td className="p-2 border-b text-sm sm:text-base">{entry.pkr.toLocaleString()}</td>
-                                                        <td className="p-2 border-b text-sm sm:text-base">${entry.usd}</td>
+                                                        <td className="p-2 border-b text-sm sm:text-base"><strong>{entry.selectedCurrencySymbol}</strong>  {entry.amountInSelectedCurrency}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
