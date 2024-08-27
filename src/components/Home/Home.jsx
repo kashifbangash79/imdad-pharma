@@ -75,19 +75,19 @@ export default function Home() {
                 <div className="bg-white shadow-lg rounded-lg p-6 text-center">
                     <h3 className="text-lg font-medium">Total Amount</h3>
                     <p className="text-2xl font-bold text-green-600">
-                        {totalAmount >= 0 ? arrowUp : arrowDown} ${totalAmount}
+                        {totalAmount >= 0 ? arrowUp : arrowDown} Rs. {totalAmount}
                     </p>
                 </div>
                 <div className="bg-white shadow-lg rounded-lg p-6 text-center">
                     <h3 className="text-lg font-medium">Today Received</h3>
                     <p className="text-2xl font-bold text-blue-600">
-                        {todayReceived >= 0 ? arrowUp : arrowDown} ${todayReceived}
+                        {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
                     </p>
                 </div>
                 <div className="bg-white shadow-lg rounded-lg p-6 text-center">
                     <h3 className="text-lg font-medium">Today Sent</h3>
                     <p className="text-2xl font-bold text-red-600">
-                        {todaySent >= 0 ? arrowUp : arrowDown} ${todaySent}
+                        {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
                     </p>
                 </div>
             </div>
