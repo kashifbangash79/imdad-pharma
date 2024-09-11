@@ -16,7 +16,7 @@ const DubaiPortExpenses = () => {
 
   const fetchExpenses = async () => {
     try {
-      const response = await axios.get('https://imdad-pharma-api.vercel.app/api/expenses');
+      const response = await axios.get('http://localhost:5000/api/expenses');
       setExpenses(response.data);
     } catch (error) {
       console.error('Error fetching expenses:', error);
@@ -29,9 +29,9 @@ const DubaiPortExpenses = () => {
       const newExpense = { name, amount, date, description };
       try {
         if (editId) {
-          await axios.put(`https://imdad-pharma-api.vercel.app/api/expenses/${editId}`, newExpense);
+          await axios.put(`http://localhost:5000/api/expenses/${editId}`, newExpense);
         } else {
-          await axios.post('https://imdad-pharma-api.vercel.app/api/expenses', newExpense);
+          await axios.post('http://localhost:5000/api/expenses', newExpense);
         }
         fetchExpenses();
         setName('');
@@ -55,7 +55,7 @@ const DubaiPortExpenses = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://imdad-pharma-api.vercel.app/api/expenses/${id}`);
+      await axios.delete(`http://localhost:5000/api/expenses/${id}`);
       fetchExpenses();
     } catch (error) {
       console.error('Error deleting expense:', error);

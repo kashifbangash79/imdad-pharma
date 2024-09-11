@@ -20,7 +20,7 @@ export default function AgentPayment({ onSubmit }) {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get('https://imdad-pharma-api.vercel.app/api/agent-payments');
+        const response = await axios.get('http://localhost:5000/api/agent-payments');
         setHistory(response.data);
       } catch (error) {
         console.error('Error fetching payment history:', error);
@@ -48,7 +48,7 @@ export default function AgentPayment({ onSubmit }) {
     if (editingIndex !== null) {
       // Update existing entry
       try {
-        const response = await axios.put(`https://imdad-pharma-api.vercel.app/api/agent-payments/update/${history[editingIndex]._id}`, shipmentDetails);
+        const response = await axios.put(`http://localhost:5000/update/${history[editingIndex]._id}`, shipmentDetails);
         const updatedHistory = [...history];
         updatedHistory[editingIndex] = response.data;
         setHistory(updatedHistory);
@@ -59,7 +59,7 @@ export default function AgentPayment({ onSubmit }) {
     } else {
       // Add new entry
       try {
-        const response = await axios.post('https://imdad-pharma-api.vercel.app/api/agent-payments/save', shipmentDetails);
+        const response = await axios.post('http://localhost:5000/api/agent-payments/save', shipmentDetails);
         setHistory([...history, response.data]);
       } catch (error) {
         console.error('Error submitting payment details:', error);

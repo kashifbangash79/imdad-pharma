@@ -368,7 +368,6 @@ const Payment = () => {
   const [paymentType, setPaymentType] = useState('cash');
   const [payerName, setPayerName] = useState('');
   const [recipientName, setRecipientName] = useState('');
-  const [nextRecipient, setNextRecipient] = useState('');
   const [transactionDate, setTransactionDate] = useState('');
   const [cashAmount, setCashAmount] = useState('');
   const [selectedBank, setSelectedBank] = useState('');
@@ -387,7 +386,6 @@ const Payment = () => {
       paymentType,
       payerName,
       recipientName,
-      nextRecipient,
       transactionDate,
       amount: paymentType === 'cash' ? cashAmount : bankAmount,
       bankName: selectedBank,
@@ -408,7 +406,6 @@ const Payment = () => {
     // Reset the form
     setPayerName('');
     setRecipientName('');
-    setNextRecipient('');
     setTransactionDate('');
     setCashAmount('');
     setSelectedBank('');
@@ -423,7 +420,6 @@ const Payment = () => {
       setPaymentType(paymentToEdit.paymentType);
       setPayerName(paymentToEdit.payerName);
       setRecipientName(paymentToEdit.recipientName);
-      setNextRecipient(paymentToEdit.nextRecipient);
       setTransactionDate(paymentToEdit.transactionDate);
       setCashAmount(paymentToEdit.amount);
       setSelectedBank(paymentToEdit.bankName);
@@ -541,17 +537,6 @@ const Payment = () => {
         </div>
 
         <div className="mb-4">
-          <label className="block mb-1 font-medium">Next Recipient</label>
-          <input
-            type="text"
-            value={nextRecipient}
-            onChange={(e) => setNextRecipient(e.target.value)}
-            placeholder="Enter Next Recipient Name"
-            className="border p-2 w-full rounded"
-          />
-        </div>
-
-        <div className="mb-4">
           <label className="block mb-1 font-medium">Transaction Date</label>
           <input
             type="date"
@@ -593,7 +578,6 @@ const Payment = () => {
             <th className="py-3 px-4 text-left">Payment Type</th>
             <th className="py-3 px-4 text-left">Amount</th>
             <th className="py-3 px-4 text-left">Recipient Name</th>
-            <th className="py-3 px-4 text-left">Next Recipient</th>
             <th className="py-3 px-4 text-left">Date</th>
             <th className="py-3 px-4 text-left">Actions</th>
           </tr>
@@ -616,9 +600,6 @@ const Payment = () => {
               </td>
               <td className="py-3 px-4 border-b border-gray-200">
                 {payment.recipientName}
-              </td>
-              <td className="py-3 px-4 border-b border-gray-200">
-                {payment.nextRecipient || 'N/A'}
               </td>
               <td className="py-3 px-4 border-b border-gray-200">
                 {new Date(payment.transactionDate).toLocaleDateString()}

@@ -15,6 +15,7 @@ import DubaiPortExpenses from './components/DubaiPortExpenses/DubaiPortExpenses.
 import Payment from './components/Payment/Payment.js';
 import './index.css';
 import SendPayment from './components/Payment/SendPayment.js';
+import DailyExpense from './components/DubaiPortExpenses/DailyExpenses.js';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path='/DubaiPortExpenses' element={<DubaiPortExpenses/>}/>
           <Route path='/payment' element= {<Payment />}/>
           <Route path='/sendPayment' element= {<SendPayment />} />
+          <Route path='/dailyExpenses' element= {<DailyExpense />} />
           </Route>
         </Routes>
       

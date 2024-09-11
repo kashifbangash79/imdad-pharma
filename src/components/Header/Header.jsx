@@ -173,7 +173,7 @@ export default function Header() {
                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
                 >
-                  SalesPurchases
+                  Customers
                 </NavLink>
               </li>
               <li>
@@ -189,19 +189,44 @@ export default function Header() {
                   Recovery
                 </NavLink>
               </li>
-              <li>
+              <li className="relative group">
                 <NavLink
-                  to="/DubaiPortExpenses"
-                  onClick={handleNavLinkClick}
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-orange-700" : "text-gray-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
-                  }
+                  to="#"
+                  className="block py-2 pr-4 pl-3 duration-200 text-gray-700 hover:text-orange-700"
+                  onClick={(e) => e.preventDefault()} // Prevent default navigation
                 >
-                  DubaiPortExpenses
+                  Expenses <span className="ml-2 text-gray-500">&#9660;</span>
                 </NavLink>
-              </li>
+                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block">
+                <li>
+                    <NavLink
+                      to="/dailyExpenses"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      DailyExpenses
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/dubaiPortExpenses"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      DubaiPortExpenses
+                    </NavLink>
+                  </li>
+
+                  </ul>
+                </li>
             </ul>
           </div>
         </div>

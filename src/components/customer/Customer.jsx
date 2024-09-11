@@ -10,8 +10,6 @@ const Customer = () => {
     email: '',
     phone: '',
     address: '',
-    sales: 0,
-    purchases: 0
   });
   const [expandedCustomerId, setExpandedCustomerId] = useState(null); // New state for toggling details
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,7 +24,7 @@ const Customer = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('https://imdad-pharma-api.vercel.app/api/customers');
+      const response = await axios.get('http://localhost:5000/api/customers');
       setCustomers(response.data);
     } catch (err) {
       console.error('Error fetching customers:', err);
@@ -56,15 +54,15 @@ const Customer = () => {
     e.preventDefault();
     try {
       if (form.id) {
-        await axios.put(`https://imdad-pharma-api.vercel.app/api/customers/${form.id}`, form);
+        await axios.put(`http://localhost:5000/api/customers/${form.id}`, form);
       } else {
-        await axios.post('https://imdad-pharma-api.vercel.app/api/customers', form);
+        await axios.post('http://localhost:5000/api/customers', form);
       }
       fetchCustomers();
     } catch (err) {
       console.error('Error saving customer:', err);
     }
-    setForm({ id: null, name: '', email: '', phone: '', address: '', sales: 0, purchases: 0 });
+    setForm({ id: null, name: '', email: '', phone: '', address: '' });
   };
 
   const handleEdit = (customer) => {
@@ -136,30 +134,7 @@ const Customer = () => {
                 required
               />
             </div>
-            <div className="mb-4">
-              <label htmlFor="sales" className="block text-lg font-medium text-gray-700 mb-2">Sales:</label>
-              <input
-                id="sales"
-                name="sales"
-                type="number"
-                value={form.sales}
-                onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="purchases" className="block text-lg font-medium text-gray-700 mb-2">Purchases:</label>
-              <input
-                id="purchases"
-                name="purchases"
-                type="number"
-                value={form.purchases}
-                onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
-            </div>
+            
           </div>
           <button
             type="submit"
@@ -207,9 +182,12 @@ const Customer = () => {
               </div>
               {expandedCustomerId === customer._id && (
                 <div className="mt-4 bg-gray-100 p-4 rounded-lg">
+
+                  <p><strong className="font-bold text-gray-700">Name:</strong> {customer.name}</p>
+                  <p><strong className="font-bold text-gray-700">Email:</strong> {customer.email}</p>
+                  <p><strong className="font-bold text-gray-700">Phone:</strong> {customer.phone}</p>
                   <p><strong className="font-bold text-gray-700">Address:</strong> {customer.address}</p>
-                  <p><strong className="font-bold text-gray-700">Sales:</strong> {customer.sales}</p>
-                  <p><strong className="font-bold text-gray-700">Purchases:</strong> {customer.purchases}</p>
+
                 </div>
               )}
             </li>
