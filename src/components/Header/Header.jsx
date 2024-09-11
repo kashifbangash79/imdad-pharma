@@ -19,7 +19,7 @@ export default function Header() {
       <nav className="border-gray-200 px-4 lg:px-6 py-2.5 max-w-screen-xl mx-auto">
         <div className="flex flex-wrap justify-between items-center">
           <Link to="/" className="flex items-center">
-            <p className="text-3 font-bold text-red-600 tracking-wider">
+            <p className="text-xl font-bold text-red-600 tracking-wider">
               IMDAD
             </p>
           </Link>
@@ -57,7 +57,7 @@ export default function Header() {
             </button>
           </div>
           <div
-            className={`lg:flex lg:w-auto ${isOpen ? "block" : "hidden"} lg:order-1 lg:flex-grow`}
+            className={`w-full lg:flex lg:w-auto ${isOpen ? "block" : "hidden"} lg:order-1 lg:flex-grow`}
             id="mobile-menu"
           >
             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-6 lg:mt-0">
@@ -95,7 +95,7 @@ export default function Header() {
                 >
                   Payments <span className="ml-2 text-gray-500">&#9660;</span>
                 </NavLink>
-                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block">
+                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block z-10">
                   <li>
                     <NavLink
                       to="/payment"
@@ -147,7 +147,7 @@ export default function Header() {
                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
                 >
-                  Frieghtdetail
+                  Freight Detail
                 </NavLink>
               </li>
               <li>
@@ -197,8 +197,8 @@ export default function Header() {
                 >
                   Expenses <span className="ml-2 text-gray-500">&#9660;</span>
                 </NavLink>
-                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block">
-                <li>
+                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block z-10">
+                  <li>
                     <NavLink
                       to="/dailyExpenses"
                       onClick={handleNavLinkClick}
@@ -208,7 +208,7 @@ export default function Header() {
                         } hover:bg-gray-50`
                       }
                     >
-                      DailyExpenses
+                      Daily Expenses
                     </NavLink>
                   </li>
                   <li>
@@ -221,12 +221,11 @@ export default function Header() {
                         } hover:bg-gray-50`
                       }
                     >
-                      DubaiPortExpenses
+                      Dubai Port Expenses
                     </NavLink>
                   </li>
-
-                  </ul>
-                </li>
+                </ul>
+              </li>
             </ul>
           </div>
         </div>
