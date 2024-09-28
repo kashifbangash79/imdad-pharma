@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 const SendPayment = () => {
     const [paymentType, setPaymentType] = useState('');
@@ -68,10 +69,14 @@ const SendPayment = () => {
         'State Life Insurance Corporation of Pakistan'
     ];
 
-    const handleSubmit = (e) => {
+    // Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (details.amount && details.recipient && details.date) {
-            setHistory([...history, { ...details, paymentType }]);
+        try {
+            const response = await axios.post('http://localhost:5000/api/sendPayment', {
+                ...details, paymentType
+            });
+            setHistory([...history, response.data]);
             setDetails({
                 amount: '',
                 recipient: '',
@@ -80,9 +85,25 @@ const SendPayment = () => {
                 date: '',
             });
             setPaymentType('');
+        } catch (error) {
+            console.error('Failed to submit transaction:', error);
         }
     };
 
+    // Fetch transaction history on mount
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/api/sendPayment');
+                setHistory(response.data);
+            } catch (error) {
+                console.error('Failed to fetch history:', error);
+            }
+        };
+        fetchHistory();
+    }, []);
+
+    // Filter transactions based on search query
     const filteredHistory = history.filter((transaction) =>
         transaction.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
         transaction.payer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -175,47 +196,41 @@ const SendPayment = () => {
                     )}
 
                     <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
-                        Submit {paymentType === 'bank' ? 'Bank' : 'Cash'} Transaction
+                        Submit {paymentType === 'bank' ? 'Bank' : 'Cash'} Payment
                     </button>
                 </form>
             )}
 
-            <div className="w-full max-w-md mt-8">
-                <label className="block text-lg font-semibold text-gray-700 mb-2">Search Transactions:</label>
+            <div className="w-full max-w-2xl mt-10">
                 <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border border-gray-300 p-3 w-full rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search by recipient, payer, or bank name"
+                    placeholder="Search in transaction history..."
+                    className="border border-gray-300 p-3 w-full rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-            </div>
+                <h3 className="text-lg font-semibold text-gray-700 mb-3">Transaction History</h3>
 
-            <div className="w-full max-w-md mt-8">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4">Transaction History</h2>
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    {filteredHistory.length === 0 ? (
-                        <p className="text-gray-600">No transactions recorded.</p>
-                    ) : (
-                        <ul className="space-y-4">
-                            {filteredHistory.map((transaction, index) => (
-                                <li key={index} className="border border-gray-300 rounded-lg p-4 bg-blue-50 hover:bg-blue-100 transition">
-                                    <div className="font-semibold text-gray-800 mb-2">Transaction {index + 1}</div>
-                                    <div className="text-gray-600">
-                                        <p><strong>Type:</strong> {transaction.paymentType === 'cash' ? 'Cash Transaction' : 'Bank Transaction'}</p>
-                                        <p><strong>Amount:</strong> {transaction.amount} Lakh</p>
-                                        <p><strong>Recipient:</strong> {transaction.recipient}</p>
-                                        <p><strong>Payer/Sender:</strong> {transaction.payer}</p>
-                                        {transaction.paymentType === 'bank' && (
-                                            <p><strong>Bank Name:</strong> {transaction.bankName}</p>
-                                        )}
-                                        <p><strong>Date:</strong> {transaction.date}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+                {filteredHistory.length > 0 ? (
+                    <ul className="space-y-4">
+                        {filteredHistory.map((transaction, index) => (
+                            <li key={index} className="border p-4 rounded-lg shadow-sm bg-white">
+                                <strong>Payment Type:</strong> {transaction.paymentType}<br />
+                                <strong>Amount:</strong> {transaction.amount}<br />
+                                <strong>Recipient:</strong> {transaction.recipient}<br />
+                                <strong>Payer:</strong> {transaction.payer}<br />
+                                {transaction.paymentType === 'bank' && (
+                                    <>
+                                        <strong>Bank:</strong> {transaction.bankName}<br />
+                                    </>
+                                )}
+                                <strong>Date:</strong> {new Date(transaction.date).toLocaleDateString()}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-gray-600">No transactions found.</p>
+                )}
             </div>
         </div>
     );

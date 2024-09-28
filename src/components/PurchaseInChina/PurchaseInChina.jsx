@@ -205,7 +205,7 @@ export default function Purchase() {
                                                     <tr key={index}>
                                                         <td className="p-2 border-b text-sm sm:text-base">{index + 1}</td>
                                                         <td className="p-2 border-b text-sm sm:text-base">{entry.date}</td>
-                                                        <td className="p-2 border-b text-sm sm:text-base">{entry.pkr.toLocaleString()}</td>
+                                                        <td className="p-2 border-b text-sm sm:text-base"><strong>Rs.</strong> {entry.pkr.toLocaleString()}</td>
                                                         <td className="p-2 border-b text-sm sm:text-base"><strong>{entry.selectedCurrencySymbol}</strong>  {entry.amountInSelectedCurrency}</td>
                                                     </tr>
                                                 ))}

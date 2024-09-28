@@ -16,6 +16,7 @@ import Payment from './components/Payment/Payment.js';
 import './index.css';
 import SendPayment from './components/Payment/SendPayment.js';
 import DailyExpense from './components/DubaiPortExpenses/DailyExpenses.js';
+import AddTransaction from './components/stockhouse/ProductSell.js';
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path='/payment' element= {<Payment />}/>
           <Route path='/sendPayment' element= {<SendPayment />} />
           <Route path='/dailyExpenses' element= {<DailyExpense />} />
+          <Route path='/productSell' element= {<AddTransaction />} />
           </Route>
         </Routes>
       

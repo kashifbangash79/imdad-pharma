@@ -150,9 +150,48 @@ export default function Header() {
                   Freight Detail
                 </NavLink>
               </li>
+
+
+              <li className="relative group">
+                <NavLink
+                  to="#"
+                  className="block py-2 pr-4 pl-3 duration-200 text-gray-700 hover:text-orange-700"
+                  onClick={(e) => e.preventDefault()} // Prevent default navigation
+                >
+                  StockHouse <span className="ml-2 text-gray-500">&#9660;</span>
+                </NavLink>
+                <ul className="absolute left-0 hidden mt-2 space-y-2 bg-white text-gray-700 shadow-lg rounded-lg group-hover:block z-10">
+                  <li>
+                    <NavLink
+                      to="/stockhouse"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      AllStockList
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink
+                      to="/productSell"
+                      onClick={handleNavLinkClick}
+                      className={({ isActive }) =>
+                        `block py-2 px-4 duration-200 ${
+                          isActive ? "text-orange-700" : "text-gray-700"
+                        } hover:bg-gray-50`
+                      }
+                    >
+                      SellProducts
+                    </NavLink>
+                  </li>
+                </ul>
+              </li>
               <li>
                 <NavLink
-                  to="/stockhouse"
+                  to="/Frieghtdetail"
                   onClick={handleNavLinkClick}
                   className={({ isActive }) =>
                     `block py-2 pr-4 pl-3 duration-200 ${
@@ -160,7 +199,7 @@ export default function Header() {
                     } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-orange-700 lg:p-0`
                   }
                 >
-                  Stockhouse
+                  Freight Detail
                 </NavLink>
               </li>
               <li>
