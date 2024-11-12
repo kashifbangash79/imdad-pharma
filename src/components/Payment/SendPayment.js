@@ -1,239 +1,403 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+const topPakistaniBanks = [
+  "Habib Bank Limited (HBL)",
+  "United Bank Limited (UBL)",
+  "National Bank of Pakistan (NBP)",
+  "MCB Bank Limited",
+  "Allied Bank Limited (ABL)",
+  "Bank Alfalah",
+  "Standard Chartered Bank Pakistan",
+  "Bank of Punjab (BOP)",
+  "Faysal Bank Limited",
+  "Meezan Bank",
+  "Askari Bank",
+  "Summit Bank",
+  "Silk Bank",
+  "JS Bank",
+  "Soneri Bank",
+];
 
-const SendPayment = () => {
-    const [paymentType, setPaymentType] = useState('');
-    const [details, setDetails] = useState({
-        amount: '',
-        recipient: '',
-        payer: '',
-        bankName: '',
-        date: '',
-    });
+const Payment = () => {
+  const [paymentType, setPaymentType] = useState("cash");
+  const [payerName, setPayerName] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+  const [cashAmount, setCashAmount] = useState("");
+  const [selectedBank, setSelectedBank] = useState("");
+  const [bankAmount, setBankAmount] = useState("");
+  const [senderName, setSenderName] = useState("");
+  const [editPaymentId, setEditPaymentId] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [payments, setPayments] = useState([]);
 
-    const [history, setHistory] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+  useEffect(() => {
+    // Fetch payments from the backend on component mount
+    const fetchPayments = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/recievedPayment"
+        ); // Use your correct API endpoint
+        const data = await response.json();
+        setPayments(data);
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+      }
+    };
+    fetchPayments();
+  }, []);
 
-    const banks = [
-        'Habib Bank Limited (HBL)',
-        'United Bank Limited (UBL)',
-        'National Bank of Pakistan (NBP)',
-        'Standard Chartered Bank',
-        'Faysal Bank',
-        'Bank Alfalah',
-        'MCB Bank Limited',
-        'Bank Islami',
-        'Dubai Islamic Bank',
-        'Samba Bank',
-        'JS Bank',
-        'Pak Oman Investment Company',
-        'Al Baraka Bank',
-        'First Women Bank',
-        'The Bank of Punjab',
-        'Summit Bank',
-        'Bank of Khyber',
-        'Bank of Azad Jammu & Kashmir',
-        'Pakistan Industrial Credit and Investment Corporation (PICIC)',
-        'Pak Brunei Investment Company',
-        'Meezan Bank',
-        'Askari Bank',
-        'Soneri Bank',
-        'Silk Bank',
-        'Allied Bank Limited (ABL)',
-        'NIB Bank',
-        'CitiBank',
-        'Deutsche Bank',
-        'Habib Metropolitan Bank',
-        'Apna Microfinance Bank',
-        'Khushhali Microfinance Bank',
-        'Mobilink Microfinance Bank',
-        'FINCA Microfinance Bank',
-        'U Microfinance Bank',
-        'First Microfinance Bank',
-        'Advans Pakistan Microfinance Bank',
-        'Waseela Microfinance Bank',
-        'Sindh Bank',
-        'KASB Bank',
-        'Zarai Taraqiati Bank Limited (ZTBL)',
-        'House Building Finance Corporation (HBFC)',
-        'Industrial Development Bank of Pakistan (IDBP)',
-        'Pak-Libya Holding Company',
-        'Pak-Iran Investment Company',
-        'Pak-Kuwait Investment Company',
-        'Pak-Oman Investment Company',
-        'Pak-China Investment Company',
-        'Pak Qatar General Takaful',
-        'Pak Qatar Family Takaful',
-        'EFU Life Assurance',
-        'Jubilee Life Insurance',
-        'State Life Insurance Corporation of Pakistan'
-    ];
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
 
-    // Handle form submission
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:5000/api/sendPayment', {
-                ...details, paymentType
-            });
-            setHistory([...history, response.data]);
-            setDetails({
-                amount: '',
-                recipient: '',
-                payer: '',
-                bankName: '',
-                date: '',
-            });
-            setPaymentType('');
-        } catch (error) {
-            console.error('Failed to submit transaction:', error);
-        }
+    const paymentData = {
+      paymentType,
+      payerName,
+      recipientName,
+      transactionDate,
+      amount: paymentType === "cash" ? cashAmount : bankAmount,
+      bankName: selectedBank,
+      senderName,
     };
 
-    // Fetch transaction history on mount
-    useEffect(() => {
-        const fetchHistory = async () => {
-            try {
-                const response = await axios.get('http://localhost:5000/api/sendPayment');
-                setHistory(response.data);
-            } catch (error) {
-                console.error('Failed to fetch history:', error);
-            }
-        };
-        fetchHistory();
-    }, []);
+    try {
+      if (editPaymentId !== null) {
+        // Update existing payment
+        const response = await fetch(
+          `http://localhost:5000/api/recievedPayment/${editPaymentId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          }
+        );
+        const updatedPayment = await response.json();
+        setPayments(
+          payments.map((payment) =>
+            payment._id === editPaymentId ? updatedPayment : payment
+          )
+        );
+      } else {
+        // Create a new payment
+        const response = await fetch(
+          "http://localhost:5000/api/recievedPayment",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          }
+        );
+        const newPayment = await response.json();
+        setPayments([...payments, newPayment]);
+      }
+      resetForm();
+    } catch (error) {
+      console.error("Error submitting payment:", error);
+    }
+  };
 
-    // Filter transactions based on search query
-    const filteredHistory = history.filter((transaction) =>
-        transaction.recipient.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        transaction.payer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (transaction.paymentType === 'bank' && transaction.bankName.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:5000/api/recievedPayment/${id}`, {
+        method: "DELETE",
+      });
+      setPayments(payments.filter((payment) => payment._id !== id));
+    } catch (error) {
+      console.error("Error deleting payment:", error);
+    }
+  };
 
-    return (
-        <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-blue-50 to-white min-h-screen flex flex-col items-center">
-            <div className="w-full max-w-md mb-6">
-                <label className="block text-lg font-semibold text-gray-700 mb-2">Select Payment Method:</label>
-                <select
-                    value={paymentType}
-                    onChange={(e) => setPaymentType(e.target.value)}
-                    className="border border-gray-300 p-3 w-full rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                >
-                    <option value="">Select Payment Type</option>
-                    <option value="cash">Cash</option>
-                    <option value="bank">Bank</option>
-                </select>
+  const handleEdit = (payment) => {
+    setEditPaymentId(payment._id);
+    setPaymentType(payment.paymentType);
+    setPayerName(payment.payerName);
+    setRecipientName(payment.recipientName);
+    setTransactionDate(payment.transactionDate);
+    if (payment.paymentType === "cash") {
+      setCashAmount(payment.amount);
+      setSelectedBank("");
+      setBankAmount("");
+      setSenderName("");
+    } else {
+      setBankAmount(payment.amount);
+      setSelectedBank(payment.bankName);
+      setSenderName(payment.senderName);
+      setCashAmount("");
+      setPayerName("");
+    }
+  };
+
+  const resetForm = () => {
+    setPayerName("");
+    setRecipientName("");
+    setTransactionDate("");
+    setCashAmount("");
+    setSelectedBank("");
+    setBankAmount("");
+    setSenderName("");
+    setEditPaymentId(null);
+    setPaymentType("cash");
+  };
+
+  const filteredPayments = payments.filter((payment) =>
+    payment.recipientName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Send Payment</h2>
+
+      <form onSubmit={handlePaymentSubmit} className="mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Payment Type */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Payment Type
+            </label>
+            <select
+              value={paymentType}
+              onChange={(e) => setPaymentType(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 bg-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+              required
+            >
+              <option value="cash">Cash</option>
+              <option value="bank">Bank</option>
+            </select>
+          </div>
+
+          {/* Transaction Date */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Transaction Date
+            </label>
+            <input
+              type="date"
+              value={transactionDate}
+              onChange={(e) => setTransactionDate(e.target.value)}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+              required
+            />
+          </div>
+
+          {/* Payer Name */}
+          {paymentType === "cash" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Sender Name
+              </label>
+              <input
+                type="text"
+                value={payerName}
+                onChange={(e) => setPayerName(e.target.value)}
+                placeholder="Enter payer name"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                required
+              />
             </div>
+          )}
 
-            {paymentType && (
-                <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 capitalize">{paymentType} Transaction</h2>
-
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-600">Amount (in Lakh):</label>
-                        <input
-                            type="number"
-                            value={details.amount}
-                            onChange={(e) => setDetails({ ...details, amount: e.target.value })}
-                            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter amount"
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-600">Recipient Name:</label>
-                        <input
-                            type="text"
-                            value={details.recipient}
-                            onChange={(e) => setDetails({ ...details, recipient: e.target.value })}
-                            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter recipient name"
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-600">
-                            {paymentType === 'cash' ? 'Payment Made By:' : 'Sender Name:'}
-                        </label>
-                        <input
-                            type="text"
-                            value={details.payer}
-                            onChange={(e) => setDetails({ ...details, payer: e.target.value })}
-                            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder={paymentType === 'cash' ? 'Enter payer name' : 'Enter sender name'}
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-600">Date:</label>
-                        <input
-                            type="date"
-                            value={details.date}
-                            onChange={(e) => setDetails({ ...details, date: e.target.value })}
-                            className="border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                        />
-                    </div>
-
-                    {paymentType === 'bank' && (
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-600">Bank Name:</label>
-                            <select
-                                value={details.bankName}
-                                onChange={(e) => setDetails({ ...details, bankName: e.target.value })}
-                                className="border border-gray-300 p-3 w-full rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
-                            >
-                                <option value="">Select Bank</option>
-                                {banks.map((bank, index) => (
-                                    <option key={index} value={bank}>{bank}</option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-
-                    <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">
-                        Submit {paymentType === 'bank' ? 'Bank' : 'Cash'} Payment
-                    </button>
-                </form>
-            )}
-
-            <div className="w-full max-w-2xl mt-10">
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search in transaction history..."
-                    className="border border-gray-300 p-3 w-full rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <h3 className="text-lg font-semibold text-gray-700 mb-3">Transaction History</h3>
-
-                {filteredHistory.length > 0 ? (
-                    <ul className="space-y-4">
-                        {filteredHistory.map((transaction, index) => (
-                            <li key={index} className="border p-4 rounded-lg shadow-sm bg-white">
-                                <strong>Payment Type:</strong> {transaction.paymentType}<br />
-                                <strong>Amount:</strong> {transaction.amount}<br />
-                                <strong>Recipient:</strong> {transaction.recipient}<br />
-                                <strong>Payer:</strong> {transaction.payer}<br />
-                                {transaction.paymentType === 'bank' && (
-                                    <>
-                                        <strong>Bank:</strong> {transaction.bankName}<br />
-                                    </>
-                                )}
-                                <strong>Date:</strong> {new Date(transaction.date).toLocaleDateString()}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-gray-600">No transactions found.</p>
-                )}
+          {/* Sender Name */}
+          {paymentType === "bank" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Sender Name
+              </label>
+              <input
+                type="text"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                placeholder="Enter sender name"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                required
+              />
             </div>
+          )}
+
+          {/* Recipient Name */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Recipient Name
+            </label>
+            <input
+              type="text"
+              value={recipientName}
+              onChange={(e) => setRecipientName(e.target.value)}
+              placeholder="Enter recipient name"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+              required
+            />
+          </div>
+
+          {/* Cash Amount */}
+          {paymentType === "cash" && (
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Amount (Cash)
+              </label>
+              <input
+                type="number"
+                value={cashAmount}
+                onChange={(e) => setCashAmount(e.target.value)}
+                placeholder="Enter cash amount"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                required
+              />
+            </div>
+          )}
+
+          {/* Bank Name */}
+          {/* {paymentType === "bank" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Bank Name
+              </label>
+              <input
+                type="text"
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                placeholder="Enter bank name"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                required
+              />
+            </div>
+          )} */}
+          {paymentType === "bank" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Bank Name
+              </label>
+              <select
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                className="mt-1 block w-full border  bg-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-gray-400"
+                required
+              >
+                <option value="" disabled>
+                  Select a bank
+                </option>
+                {topPakistaniBanks.map((bank, index) => (
+                  <option key={index} value={bank}>
+                    {bank}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Bank Amount */}
+          {paymentType === "bank" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Amount (Bank)
+              </label>
+              <input
+                type="number"
+                value={bankAmount}
+                onChange={(e) => setBankAmount(e.target.value)}
+                placeholder="Enter bank amount"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+                required
+              />
+            </div>
+          )}
         </div>
-    );
+
+        {/* Buttons */}
+        <div className="mt-6 flex space-x-4">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            {editPaymentId ? "Update Payment" : "Submit Payment"}
+          </button>
+          <button
+            type="button"
+            onClick={resetForm}
+            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+
+      <hr className="mb-6" />
+
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search by recipient name"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
+        />
+      </div>
+
+      {/* Payments Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white rounded-lg shadow ">
+          <thead>
+            <tr className="bg-blue-500 text-white   text-[12px] ">
+              <th className="py-3 px-4 text-left">Payment Type</th>
+              <th className="py-3 px-4 text-left">Payer / Sender</th>
+              <th className="py-3 px-4 text-left">Recipient Name</th>
+              <th className="py-3 px-4 text-left">Transaction Date</th>
+              <th className="py-3 px-4 text-left">Amount</th>
+              <th className="py-3 px-4 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPayments.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="text-center py-4 text-gray-600">
+                  No payments found.
+                </td>
+              </tr>
+            ) : (
+              filteredPayments.map((payment) => (
+                <tr
+                  key={payment._id}
+                  className="border-b border-gray-200 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-4">
+                    {payment.paymentType.charAt(0).toUpperCase() +
+                      payment.paymentType.slice(1)}
+                  </td>
+                  <td className="py-3 px-4">
+                    {payment.paymentType === "cash"
+                      ? payment.payerName
+                      : payment.senderName}
+                  </td>
+                  <td className="py-3 px-4">{payment.recipientName}</td>
+                  <td className="py-3 px-4">
+                    {new Date(payment.transactionDate).toLocaleDateString()}
+                  </td>
+                  <td className="py-3 px-4">{payment.amount}</td>
+                  <td className="py-3 px-4 space-x-2">
+                    <button
+                      onClick={() => handleEdit(payment)}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(payment._id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
-export default SendPayment;
+export default Payment;

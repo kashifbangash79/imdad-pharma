@@ -1,11 +1,11 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import { NavLink } from 'react-router-dom';
-import { green } from '@mui/material/colors';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { NavLink } from "react-router-dom";
+import { IoIosArrowDown } from "react-icons/io";
 
-function DropdownMenu({ navLabel, navItems,handleNavLinkClick,islarge }) {
+function DropdownMenu({ navLabel, navItems, handleNavLinkClick, islarge }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -21,24 +21,24 @@ function DropdownMenu({ navLabel, navItems,handleNavLinkClick,islarge }) {
     <div>
       <Button
         id="dropdown-button"
-        aria-controls={open ? 'dropdown-menu' : undefined}
+        aria-controls={open ? "dropdown-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
+        aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
-    
-
+        endIcon={<IoIosArrowDown />}
         sx={{
-        //   color: '#FF5722', // Change text color
-          fontWeight:`${!islarge ? 'bold' : 'normal'}`, // Change font weight
-        color:'black',
-        padding: "0",
-        fontSize: `${islarge? '14px' : '20px'}`,
-        
-        textTransform: "none",
-          fontFamily: 'Arial, sans-serif', // Change font family
-        //   '&:hover': {
-        //     backgroundColor: 'rgba(255, 87, 34, 0.1)', // Change background on hover
-        //   },
+          fontWeight: `${!islarge ? "bold" : "normal"}`,
+          color: "black",
+          padding: "0",
+          fontSize: `${islarge ? "14px" : "20px"}`,
+          textTransform: "none",
+          fontFamily: "Arial, sans-serif",
+          outline: "none", // Remove outline on focus
+          boxShadow: "none", // Remove shadow on focus
+          "&:focus": {
+            outline: "none", // Ensure outline is removed
+            boxShadow: "none", // Ensure shadow is removed
+          },
         }}
       >
         {navLabel}
@@ -49,20 +49,22 @@ function DropdownMenu({ navLabel, navItems,handleNavLinkClick,islarge }) {
         open={open}
         onClose={handleClose}
         MenuListProps={{
-          'aria-labelledby': 'dropdown-button',
+          "aria-labelledby": "dropdown-button",
         }}
-       
       >
         {navItems.map((item, index) => (
-        <NavLink to={item.link} key={index} onClick={handleNavLinkClick}>
-        <MenuItem
-            key={index}
-            onClick={handleClose}
-           
-          >
-            {item.name}
-          </MenuItem>
-        </NavLink>
+          <NavLink to={item.link} key={index} onClick={handleNavLinkClick}>
+            <MenuItem
+              onClick={handleClose}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              {item.icon && (
+                <item.icon style={{ fontSize: 18, marginRight: 8 }} />
+              )}{" "}
+              {/* Render icon */}
+              {item.name}
+            </MenuItem>
+          </NavLink>
         ))}
       </Menu>
     </div>

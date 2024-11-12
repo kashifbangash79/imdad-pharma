@@ -1,27 +1,46 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+const topPakistaniBanks = [
+  "Habib Bank Limited (HBL)",
+  "United Bank Limited (UBL)",
+  "National Bank of Pakistan (NBP)",
+  "MCB Bank Limited",
+  "Allied Bank Limited (ABL)",
+  "Bank Alfalah",
+  "Standard Chartered Bank Pakistan",
+  "Bank of Punjab (BOP)",
+  "Faysal Bank Limited",
+  "Meezan Bank",
+  "Askari Bank",
+  "Summit Bank",
+  "Silk Bank",
+  "JS Bank",
+  "Soneri Bank",
+];
 
 const Payment = () => {
-  const [paymentType, setPaymentType] = useState('cash');
-  const [payerName, setPayerName] = useState('');
-  const [recipientName, setRecipientName] = useState('');
-  const [transactionDate, setTransactionDate] = useState('');
-  const [cashAmount, setCashAmount] = useState('');
-  const [selectedBank, setSelectedBank] = useState('');
-  const [bankAmount, setBankAmount] = useState('');
-  const [senderName, setSenderName] = useState('');
+  const [paymentType, setPaymentType] = useState("cash");
+  const [payerName, setPayerName] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [transactionDate, setTransactionDate] = useState("");
+  const [cashAmount, setCashAmount] = useState("");
+  const [selectedBank, setSelectedBank] = useState("");
+  const [bankAmount, setBankAmount] = useState("");
+  const [senderName, setSenderName] = useState("");
   const [editPaymentId, setEditPaymentId] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
     // Fetch payments from the backend on component mount
     const fetchPayments = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/recievedPayment'); // Use your correct API endpoint
+        const response = await fetch(
+          "http://localhost:5000/api/recievedPayment"
+        ); // Use your correct API endpoint
         const data = await response.json();
         setPayments(data);
       } catch (error) {
-        console.error('Error fetching payments:', error);
+        console.error("Error fetching payments:", error);
       }
     };
     fetchPayments();
@@ -35,7 +54,7 @@ const Payment = () => {
       payerName,
       recipientName,
       transactionDate,
-      amount: paymentType === 'cash' ? cashAmount : bankAmount,
+      amount: paymentType === "cash" ? cashAmount : bankAmount,
       bankName: selectedBank,
       senderName,
     };
@@ -43,39 +62,51 @@ const Payment = () => {
     try {
       if (editPaymentId !== null) {
         // Update existing payment
-        const response = await fetch(`http://localhost:5000/api/recievedPayment/${editPaymentId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paymentData),
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/recievedPayment/${editPaymentId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          }
+        );
         const updatedPayment = await response.json();
-        setPayments(payments.map((payment) => (payment._id === editPaymentId ? updatedPayment : payment)));
+        setPayments(
+          payments.map((payment) =>
+            payment._id === editPaymentId ? updatedPayment : payment
+          )
+        );
       } else {
         // Create a new payment
-        const response = await fetch('http://localhost:5000/api/recievedPayment', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paymentData),
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/recievedPayment",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData),
+          }
+        );
         const newPayment = await response.json();
         setPayments([...payments, newPayment]);
       }
       resetForm();
     } catch (error) {
-      console.error('Error submitting payment:', error);
+      console.error("Error submitting payment:", error);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/recievedPayment/${id}`, { method: 'DELETE' });
+      await fetch(`http://localhost:5000/api/recievedPayment/${id}`, {
+        method: "DELETE",
+      });
       setPayments(payments.filter((payment) => payment._id !== id));
     } catch (error) {
-      console.error('Error deleting payment:', error);
+      console.error("Error deleting payment:", error);
     }
   };
 
@@ -85,45 +116,49 @@ const Payment = () => {
     setPayerName(payment.payerName);
     setRecipientName(payment.recipientName);
     setTransactionDate(payment.transactionDate);
-    if (payment.paymentType === 'cash') {
+    if (payment.paymentType === "cash") {
       setCashAmount(payment.amount);
-      setSelectedBank('');
-      setBankAmount('');
-      setSenderName('');
+      setSelectedBank("");
+      setBankAmount("");
+      setSenderName("");
     } else {
       setBankAmount(payment.amount);
       setSelectedBank(payment.bankName);
       setSenderName(payment.senderName);
-      setCashAmount('');
-      setPayerName('');
+      setCashAmount("");
+      setPayerName("");
     }
   };
 
   const resetForm = () => {
-    setPayerName('');
-    setRecipientName('');
-    setTransactionDate('');
-    setCashAmount('');
-    setSelectedBank('');
-    setBankAmount('');
-    setSenderName('');
+    setPayerName("");
+    setRecipientName("");
+    setTransactionDate("");
+    setCashAmount("");
+    setSelectedBank("");
+    setBankAmount("");
+    setSenderName("");
     setEditPaymentId(null);
-    setPaymentType('cash');
+    setPaymentType("cash");
   };
 
-  const filteredPayments = payments.filter(payment =>
+  const filteredPayments = payments.filter((payment) =>
     payment.recipientName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Received Payment</h2>
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+        Received Payment
+      </h2>
 
       <form onSubmit={handlePaymentSubmit} className="mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Payment Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Payment Type</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Payment Type
+            </label>
             <select
               value={paymentType}
               onChange={(e) => setPaymentType(e.target.value)}
@@ -137,7 +172,9 @@ const Payment = () => {
 
           {/* Transaction Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Transaction Date</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Transaction Date
+            </label>
             <input
               type="date"
               value={transactionDate}
@@ -148,9 +185,11 @@ const Payment = () => {
           </div>
 
           {/* Payer Name */}
-          {paymentType === 'cash' && (
+          {paymentType === "cash" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Payer Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Payer Name
+              </label>
               <input
                 type="text"
                 value={payerName}
@@ -163,9 +202,11 @@ const Payment = () => {
           )}
 
           {/* Sender Name */}
-          {paymentType === 'bank' && (
+          {paymentType === "bank" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Sender Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Sender Name
+              </label>
               <input
                 type="text"
                 value={senderName}
@@ -179,7 +220,9 @@ const Payment = () => {
 
           {/* Recipient Name */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">Recipient Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Recipient Name
+            </label>
             <input
               type="text"
               value={recipientName}
@@ -191,9 +234,11 @@ const Payment = () => {
           </div>
 
           {/* Cash Amount */}
-          {paymentType === 'cash' && (
+          {paymentType === "cash" && (
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Amount (Cash)</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Amount (Cash)
+              </label>
               <input
                 type="number"
                 value={cashAmount}
@@ -206,9 +251,11 @@ const Payment = () => {
           )}
 
           {/* Bank Name */}
-          {paymentType === 'bank' && (
+          {/* {paymentType === "bank" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Bank Name</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Bank Name
+              </label>
               <input
                 type="text"
                 value={selectedBank}
@@ -218,12 +265,36 @@ const Payment = () => {
                 required
               />
             </div>
+          )} */}
+          {paymentType === "bank" && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Bank Name
+              </label>
+              <select
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                className="mt-1 block w-full border  bg-white rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-gray-400"
+                required
+              >
+                <option value="" disabled>
+                  Select a bank
+                </option>
+                {topPakistaniBanks.map((bank, index) => (
+                  <option key={index} value={bank}>
+                    {bank}
+                  </option>
+                ))}
+              </select>
+            </div>
           )}
 
           {/* Bank Amount */}
-          {paymentType === 'bank' && (
+          {paymentType === "bank" && (
             <div>
-              <label className="block text-sm font-medium text-gray-700">Amount (Bank)</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Amount (Bank)
+              </label>
               <input
                 type="number"
                 value={bankAmount}
@@ -242,7 +313,7 @@ const Payment = () => {
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
           >
-            {editPaymentId ? 'Update Payment' : 'Submit Payment'}
+            {editPaymentId ? "Update Payment" : "Submit Payment"}
           </button>
           <button
             type="button"
@@ -269,9 +340,9 @@ const Payment = () => {
 
       {/* Payments Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg shadow">
+        <table className="min-w-full bg-white rounded-lg shadow ">
           <thead>
-            <tr className="bg-blue-500 text-white">
+            <tr className="bg-blue-500 text-white   text-[12px] ">
               <th className="py-3 px-4 text-left">Payment Type</th>
               <th className="py-3 px-4 text-left">Payer / Sender</th>
               <th className="py-3 px-4 text-left">Recipient Name</th>
@@ -293,9 +364,14 @@ const Payment = () => {
                   key={payment._id}
                   className="border-b border-gray-200 hover:bg-gray-50"
                 >
-                  <td className="py-3 px-4">{payment.paymentType.charAt(0).toUpperCase() + payment.paymentType.slice(1)}</td>
                   <td className="py-3 px-4">
-                    {payment.paymentType === 'cash' ? payment.payerName : payment.senderName}
+                    {payment.paymentType.charAt(0).toUpperCase() +
+                      payment.paymentType.slice(1)}
+                  </td>
+                  <td className="py-3 px-4">
+                    {payment.paymentType === "cash"
+                      ? payment.payerName
+                      : payment.senderName}
                   </td>
                   <td className="py-3 px-4">{payment.recipientName}</td>
                   <td className="py-3 px-4">

@@ -49,15 +49,15 @@ export default function Home() {
 
   return (
     <div className="mx-auto w-full max-w-7xl">
-      <aside className="relative overflow-hidden text-black rounded-lg  mx-2 sm:py-16 flex items-center lg:flex-row flex-col justify-between">
-        <div className="  sm:my-20 sm:pt-1 pt-12 lg:order-1 order-2 lg:ml-4 ">
+      <aside className=" overflow-hidden text-black rounded-lg  mx-2 lg:py-16 flex  lg:flex-row flex-col justify-between items-center lg:gap-0 gap-14 ">
+        <div className="    lg:order-1 order-2 lg:ml-4       ">
           <img
             className="w-96"
             src="https://i.ibb.co/5BCcDYB/Remote2.png"
             alt="image1"
           />
         </div>
-        <div className="relative z-10  px-4 pb-20    sm:px-6 lg:px-8  lg:order-2 order-1 ">
+        <div className=" px-4 sm:px-6 lg:px-8  lg:order-2 order-1  pt-16  ">
           <div className="max-w-xl sm:mt-1 mt-20 space-y-8 text-center sm:text-right sm:ml-auto">
             <h2 className="text-4xl font-bold sm:text-5xl">
               IMDAD PHARMA 💊
@@ -98,19 +98,51 @@ export default function Home() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
         <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Total Amount</h3>
+          <h3 className="text-lg font-medium"> Today Recieved in UBL</h3>
           <p className="text-2xl font-bold text-green-600">
             {totalAmount >= 0 ? arrowUp : arrowDown} Rs. {totalAmount}
           </p>
         </div>
         <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Received</h3>
+          <h3 className="text-lg font-medium">Today Received in MCB</h3>
           <p className="text-2xl font-bold text-blue-600">
             {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
           </p>
         </div>
         <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Sent</h3>
+          <h3 className="text-lg font-medium">Today Recieved in HBL</h3>
+          <p className="text-2xl font-bold text-red-600">
+            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
+        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <h3 className="text-lg font-medium">Today Recieved in Khyber</h3>
+          <p className="text-2xl font-bold text-green-600">
+            {totalAmount >= 0 ? arrowUp : arrowDown} Rs. {totalAmount}
+          </p>
+        </div>
+        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <h3 className="text-lg font-medium">Today Recieved in Meezan</h3>
+          <p className="text-2xl font-bold text-blue-600">
+            {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
+          </p>
+        </div>
+        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <h3 className="text-lg font-medium">Today Recieved in CASH</h3>
+          <p className="text-2xl font-bold text-red-600">
+            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
+          </p>
+        </div>
+        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <h3 className="text-lg font-medium">Total Send Today</h3>
+          <p className="text-2xl font-bold text-red-600">
+            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
+          </p>
+        </div>
+        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
+          <h3 className="text-lg font-medium">Total Amount</h3>
           <p className="text-2xl font-bold text-red-600">
             {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
           </p>

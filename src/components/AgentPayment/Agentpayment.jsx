@@ -12,18 +12,38 @@ export default function AgentPayment({ onSubmit }) {
   });
 
   const [history, setHistory] = useState([]);
+  const [amountInPKR, setAmountInPKR] = useState("");
+  const [conversionRate, setConversionRate] = useState("");
   const [deletedHistory, setDeletedHistory] = useState([]);
   const [editingIndex, setEditingIndex] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+  const [selectedCurrency, setSelectedCurrency] = useState(""); // Default to USD
 
+  const currencySymbols = {
+    USD: "$",
+    CNY: "¥",
+    AED: "AED",
+    SAR: "SAR",
+    AFN: "AFN",
+    EUR: "€",
+  };
+
+  const amountInSelectedCurrency = (amountInPKR / conversionRate).toFixed(2);
+  const selectedCurrencySymbol = currencySymbols[selectedCurrency];
+
+  const handlePKRChange = (event) => {
+    setAmountInPKR(event.target.value);
+  };
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/agent-payments');
+        const response = await axios.get(
+          "http://localhost:5000/api/agent-payments"
+        );
         setHistory(response.data);
       } catch (error) {
-        console.error('Error fetching payment history:', error);
+        console.error("Error fetching payment history:", error);
       }
     };
 
@@ -48,21 +68,27 @@ export default function AgentPayment({ onSubmit }) {
     if (editingIndex !== null) {
       // Update existing entry
       try {
-        const response = await axios.put(`http://localhost:5000/update/${history[editingIndex]._id}`, shipmentDetails);
+        const response = await axios.put(
+          `http://localhost:5000/update/${history[editingIndex]._id}`,
+          shipmentDetails
+        );
         const updatedHistory = [...history];
         updatedHistory[editingIndex] = response.data;
         setHistory(updatedHistory);
         setEditingIndex(null);
       } catch (error) {
-        console.error('Error updating payment details:', error);
+        console.error("Error updating payment details:", error);
       }
     } else {
       // Add new entry
       try {
-        const response = await axios.post('http://localhost:5000/api/agent-payments/save', shipmentDetails);
+        const response = await axios.post(
+          "http://localhost:5000/api/agent-payments/save",
+          shipmentDetails
+        );
         setHistory([...history, response.data]);
       } catch (error) {
-        console.error('Error submitting payment details:', error);
+        console.error("Error submitting payment details:", error);
       }
     }
 
@@ -100,31 +126,31 @@ export default function AgentPayment({ onSubmit }) {
     setShowHistory(!showHistory);
   };
 
-  const filteredHistory = history.filter((entry) =>
-    entry.shipmentNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    entry.arrivalDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    entry.agentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    entry.paymentAmount.toString().includes(searchQuery.toLowerCase()) ||
-    entry.paymentDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    entry.paymentStatus.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredHistory = history.filter(
+    (entry) =>
+      entry.shipmentNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.arrivalDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.agentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.paymentAmount.toString().includes(searchQuery.toLowerCase()) ||
+      entry.paymentDate.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.paymentStatus.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen">
       <section className="bg-white shadow-lg rounded-lg p-8 mb-8 max-w-3xl mx-auto">
         <h2 className="text-3xl font-extrabold text-gray-800 mb-6">
-          Clearing Agent Payment Details
+          Agent Payment
         </h2>
         <p className="text-lg text-gray-600 mb-6">
-          Enter the details of the clearing agent payment for the shipment from
-          Dubai to Karachi.
+          Enter the details of the clearing agent payment for the shipment.
         </p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="shipmentNumber"
-                className="block text-lg font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Shipment Number:
               </label>
@@ -134,14 +160,14 @@ export default function AgentPayment({ onSubmit }) {
                 type="text"
                 value={shipmentDetails.shipmentNumber}
                 onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="arrivalDate"
-                className="block text-lg font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Arrival Date:
               </label>
@@ -151,14 +177,14 @@ export default function AgentPayment({ onSubmit }) {
                 type="date"
                 value={shipmentDetails.arrivalDate}
                 onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="agentName"
-                className="block text-lg font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Clearing Agent Name:
               </label>
@@ -168,31 +194,40 @@ export default function AgentPayment({ onSubmit }) {
                 type="text"
                 value={shipmentDetails.agentName}
                 onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="paymentAmount"
-                className="block text-lg font-medium text-gray-700 mb-2"
-              >
-                Payment Amount (PKR):
-              </label>
-              <input
-                id="paymentAmount"
-                name="paymentAmount"
-                type="number"
-                value={shipmentDetails.paymentAmount}
-                onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                required
-              />
+
+            <div className="flex flex-col mt-1">
+              <p>Payment Amount:</p>
+              <div className="flex gap-1 h-[35px] ">
+                <select
+                  id="currency"
+                  value={selectedCurrency}
+                  onChange={(e) => setSelectedCurrency(e.target.value)}
+                  className="w-full h-full p-1 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
+                >
+                  <option value="USD">USD</option>
+                  <option value="CNY">Chinese Yuan</option>
+                  <option value="AED">Dirham</option>
+                  <option value="SAR">Riyal</option>
+                  <option value="AFN">Afghan Afghani</option>
+                  <option value="EUR">Euro</option>
+                </select>
+                <input
+                  id="conversionRate"
+                  type="number"
+                  value={conversionRate}
+                  onChange={(e) => setConversionRate(e.target.value)}
+                  className="w-full p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="paymentDate"
-                className="block text-lg font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Payment Date:
               </label>
@@ -202,14 +237,14 @@ export default function AgentPayment({ onSubmit }) {
                 type="date"
                 value={shipmentDetails.paymentDate}
                 onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 required
               />
             </div>
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="paymentStatus"
-                className="block text-lg font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Payment Status:
               </label>
@@ -218,7 +253,7 @@ export default function AgentPayment({ onSubmit }) {
                 name="paymentStatus"
                 value={shipmentDetails.paymentStatus}
                 onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white "
               >
                 <option value="Pending">Pending</option>
                 <option value="Completed">Completed</option>
@@ -229,45 +264,57 @@ export default function AgentPayment({ onSubmit }) {
           <div>
             <button
               type="submit"
-              className="w-full py-4 px-6 bg-orange-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="p-2 w-fit bg-orange-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
-              {editingIndex !== null ? 'Update Payment' : 'Submit Payment'}
+              {editingIndex !== null ? "Update Payment" : "Submit Payment"}
             </button>
           </div>
         </form>
       </section>
 
-      <section className="bg-white shadow-lg rounded-lg p-8 mb-8 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-6">
+      <section className="bg-white shadow-lg rounded-lg p-8 mb-8 max-w-5xl mx-auto flex flex-col gap-5">
+        <h2 className="text-2xl font-extrabold text-gray-800 mb-6">
           Payment History
         </h2>
-        <div className="mb-4">
+        <div>
           <input
             type="text"
             value={searchQuery}
             onChange={handleSearchChange}
             placeholder="Search payment history"
-            className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
         <button
           onClick={toggleHistory}
-          className="py-4 px-6 bg-orange-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="p-2 bg-orange-500 text-white text-sm w-fit font-semibold rounded-lg shadow-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
         >
-          {showHistory ? 'Hide History' : 'Show History'}
+          {showHistory ? "Hide History" : "Show History"}
         </button>
         {showHistory && (
           <div className="overflow-x-auto mt-6">
             <table className="w-full table-auto border-collapse">
               <thead>
-                <tr className="bg-gray-200">
-                  <th className="py-3 px-4 border border-gray-300">Shipment Number</th>
-                  <th className="py-3 px-4 border border-gray-300">Arrival Date</th>
-                  <th className="py-3 px-4 border border-gray-300">Clearing Agent Name</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Amount (PKR)</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Date</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Status</th>
-                  <th className="py-3 px-4 border border-gray-300">Actions</th>
+                <tr className="bg-blue-400 text-white text-[10px] sm:text-[12px] ">
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Shipment Number
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Arrival Date
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Clearing Agent Name
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Payment Amount (PKR)
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Payment Date
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">
+                    Payment Status
+                  </th>
+                  <th className="sm:p-2 p-1 border border-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -302,7 +349,7 @@ export default function AgentPayment({ onSubmit }) {
       </section>
 
       <section className="bg-white shadow-lg rounded-lg p-8 mb-8 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-extrabold text-gray-800 mb-6">
+        <h2 className="text-2xl font-extrabold text-gray-800 mb-6">
           Deleted Payment History
         </h2>
         {deletedHistory.length > 0 ? (
@@ -310,12 +357,24 @@ export default function AgentPayment({ onSubmit }) {
             <table className="w-full table-auto border-collapse">
               <thead>
                 <tr className="bg-gray-200">
-                  <th className="py-3 px-4 border border-gray-300">Shipment Number</th>
-                  <th className="py-3 px-4 border border-gray-300">Arrival Date</th>
-                  <th className="py-3 px-4 border border-gray-300">Clearing Agent Name</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Amount (PKR)</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Date</th>
-                  <th className="py-3 px-4 border border-gray-300">Payment Status</th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Shipment Number
+                  </th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Arrival Date
+                  </th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Clearing Agent Name
+                  </th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Payment Amount (PKR)
+                  </th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Payment Date
+                  </th>
+                  <th className="py-3 px-4 border border-gray-300">
+                    Payment Status
+                  </th>
                   <th className="py-3 px-4 border border-gray-300">Actions</th>
                 </tr>
               </thead>

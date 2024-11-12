@@ -1,62 +1,79 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password }
+      );
       // Handle successful login
-      navigate('/home'); // Adjust the path as needed
+      navigate("/home"); // Adjust the path as needed
     } catch (err) {
-      setError('Invalid credentials. Please try again.');
+      setError("Invalid credentials. Please try again.");
     }
   };
 
   return (
-    <div className="container mx-auto p-6 bg-gray-100 min-h-screen flex items-center justify-center">
-      <section className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
-        <form onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-lg shadow-md">
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-2">Email:</label>
+    <div className="min-h-screen flex items-center justify-center bg-orange-200 p-6  ">
+      <section className="bg-orange-300 shadow-lg rounded-lg p-8 max-w-md w-full">
+        <h2 className="text-2xl font-semibold text-center text-white mb-6">
+          Sign In to Your Account
+        </h2>
+        <form onSubmit={handleSubmit} className=" flex flex-col gap-3">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-lg font-medium text-white "
+            >
+              Email:
+            </label>
             <input
               id="email"
               name="email"
+              placeholder=" Enter your email"
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-400"
               required
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-lg font-medium text-gray-700 mb-2">Password:</label>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-lg font-medium text-white "
+            >
+              Password:
+            </label>
             <input
               id="password"
               name="password"
               type="password"
+              placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 text-gray-400"
               required
             />
           </div>
-          {error && <div className="text-red-500 mb-4">{error}</div>}
+          {error && (
+            <div className="text-red-500 text-sm font-semibold">{error}</div>
+          )}
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+            className="w-full py-2 bg-orange-500 hover:bg-orange-400 text-white font-bold rounded-full shadow-lg my-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Sign In
           </button>
-          <div className="mt-4 flex flex-col ml-5">
-            <p>Don't have an account? <Link to="/register" className='text-blue-500 hover:underline'>Sign Up</Link></p>
-          </div>
         </form>
       </section>
     </div>

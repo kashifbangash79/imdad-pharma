@@ -1,31 +1,32 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout.jsx';
-import Home from './components/Home/Home.jsx'
-import FreightDetail from './components/Frieghtdetail/Frieghtdetail.jsx';
-import Stockhouse from './components/stockhouse/Stockhouse.jsx';
-import AgentPayment from './components/AgentPayment/Agentpayment.jsx';
-import Customer from './components/customer/Customer.jsx';
-import Purchase from './components/PurchaseInChina/PurchaseInChina.jsx';
-import Recovery from './components/Recovery/Recovery.jsx';
-import Logout from './components/Logout/Logout.jsx';
-import Register from './components/Login/Register.jsx';
-import Login from './components/Login/Login.jsx';
-import DubaiPortExpenses from './components/DubaiPortExpenses/DubaiPortExpenses.jsx';
-import Payment from './components/Payment/Payment.js';
-import './index.css';
-import SendPayment from './components/Payment/SendPayment.js';
-import DailyExpense from './components/DubaiPortExpenses/DailyExpenses.js';
-import AddTransaction from './components/stockhouse/ProductSell.js';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout.jsx";
+import Home from "./components/Home/Home.jsx";
+import FreightDetail from "./components/Frieghtdetail/Frieghtdetail.jsx";
+import Stockhouse from "./components/stockhouse/Stockhouse.jsx";
+import AgentPayment from "./components/AgentPayment/Agentpayment.jsx";
+import Customer from "./components/customer/Customer.jsx";
+import Purchase from "./components/PurchaseInChina/PurchaseInChina.jsx";
+import Recovery from "./components/Recovery/Recovery.jsx";
+import Logout from "./components/Logout/Logout.jsx";
+import Register from "./components/Login/Register.jsx";
+import Login from "./components/Login/Login.jsx";
+import DubaiPortExpenses from "./components/DubaiPortExpenses/DubaiPortExpenses.jsx";
+import Payment from "./components/Payment/Payment.js";
+import "./index.css";
+import SendPayment from "./components/Payment/SendPayment.js";
+import DailyExpense from "./components/DubaiPortExpenses/DailyExpenses.js";
+import AddTransaction from "./components/stockhouse/ProductSell.jsx";
+import CommissionTracker from "./components/DubaiPortExpenses/commission.jsx";
 
 function App() {
   return (
     <Router>
-        <Routes>
-        <Route path="/" element={<Login />} />
+      <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Layout />}>
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/Freightdetail" element={<FreightDetail />} />
           <Route path="/stockhouse" element={<Stockhouse />} />
           <Route path="/agentpayment" element={<AgentPayment />} />
@@ -33,14 +34,14 @@ function App() {
           <Route path="/purchase" element={<Purchase />} />
           <Route path="/recovery" element={<Recovery />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path='/DubaiPortExpenses' element={<DubaiPortExpenses/>}/>
-          <Route path='/payment' element= {<Payment />}/>
-          <Route path='/sendPayment' element= {<SendPayment />} />
-          <Route path='/dailyExpenses' element= {<DailyExpense />} />
-          <Route path='/productSell' element= {<AddTransaction />} />
-          </Route>
-        </Routes>
-      
+          <Route path="/DubaiPortExpenses" element={<DubaiPortExpenses />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/sendPayment" element={<SendPayment />} />
+          <Route path="/dailyExpenses" element={<DailyExpense />} />
+          <Route path="/productSell" element={<AddTransaction />} />
+          <Route path="/commission" element={<CommissionTracker />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }

@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const StockHouse = () => {
   const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: '', salePrice: '', purchasePrice: '', quantity: '' });
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    salePrice: "",
+    purchasePrice: "",
+    quantity: "",
+  });
   const [totalProfit, setTotalProfit] = useState(0);
 
   // Fetch products from the backend on component mount
@@ -14,19 +20,21 @@ const StockHouse = () => {
   // Function to fetch products from the backend
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/stocks');
+      const response = await axios.get("http://localhost:5000/api/stocks");
       const data = response.data;
       setProducts(data);
       calculateTotalProfit(data);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     }
   };
 
   // Function to calculate total profit
   const calculateTotalProfit = (data) => {
     const profit = data.reduce((acc, product) => {
-      return acc + (product.salePrice - product.purchasePrice) * product.soldQuantity;
+      return (
+        acc + (product.salePrice - product.purchasePrice) * product.soldQuantity
+      );
     }, 0);
     setTotalProfit(profit);
   };
@@ -47,28 +55,38 @@ const StockHouse = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/stocks', productToAdd);
+      const response = await axios.post(
+        "http://localhost:5000/api/stocks",
+        productToAdd
+      );
       const addedProduct = response.data;
 
       // Add the new product to the state and recalculate profit
       setProducts([...products, addedProduct]);
-      setNewProduct({ name: '', salePrice: '', purchasePrice: '', quantity: '' });
+      setNewProduct({
+        name: "",
+        salePrice: "",
+        purchasePrice: "",
+        quantity: "",
+      });
       calculateTotalProfit([...products, addedProduct]);
     } catch (error) {
-      console.error('Error adding product:', error);
+      console.error("Error adding product:", error);
     }
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Stockhouse Inventory</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Inventory Manager</h1>
 
       {/* Add New Product Form */}
       <div className="mb-6 bg-gray-100 p-4 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-4 text-center">Add New Product</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="text-xl font-semibold mb-4 text-center">
+          Add New Product
+        </h2>
+        <div className=" flex flex-col   gap-2">
           <input
-            className="border rounded p-2 w-full"
+            className="border rounded p-2 w-full "
             type="text"
             name="name"
             placeholder="Product Name"
@@ -91,16 +109,38 @@ const StockHouse = () => {
             value={newProduct.salePrice}
             onChange={handleInputChange}
           />
-          <input
+          {/* <input
             className="border rounded p-2 w-full"
             type="number"
             name="quantity"
             placeholder="Quantity"
             value={newProduct.quantity}
             onChange={handleInputChange}
-          />
+          /> */}
+          <div className="flex flex-col mt-1">
+            {/* <p>Payment Amount:</p> */}
+            <div className="flex gap-1 h-[35px] ">
+              <select
+                id="currency"
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+                className="w-full h-full p-1 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
+              >
+                <option value="Kg">Weight</option>
+                <option value="size">Size</option>
+                <option value="quantity">Quantity</option>
+              </select>
+              <input
+                id="conversionRate"
+                type="text"
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </div>
           <button
-            className="col-span-1 sm:col-span-2 lg:col-span-4 bg-green-500 text-white rounded p-2 hover:bg-green-600"
+            className="col-span-1 sm:col-span-2 lg:col-span-4  text-white rounded p-2 bg-orange-600 hover:bg-orange-500"
             onClick={handleAddProduct}
           >
             Add Product
@@ -111,23 +151,27 @@ const StockHouse = () => {
       {/* Products Table */}
       <div className="overflow-x-auto">
         <table className="table-auto w-full text-left bg-white shadow-md rounded-lg">
-          <thead className="bg-gray-800 text-white">
+          <thead className="bg-blue-400 text-white">
             <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Purchase Price</th>
-              <th className="px-4 py-2">Sale Price</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Profit per Item</th>
+              <th className="lg:p-3 p-1 text-[14px]  ">Name</th>
+              <th className="lg:p-3 p-1 text-[14px] ">Purchase Price</th>
+              <th className="lg:p-3 p-1 text-[14px] ">Sale Price</th>
+              <th className="lg:p-3 p-1 text-[14px] ">qty/size/kg</th>
+              <th className="lg:p-3 p-1 text-[14px] ">Profit per Item</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product._id} className="border-t">
-                <td className="px-4 py-2">{product.name}</td>
-                <td className="px-4 py-2">{product.purchasePrice}</td>
-                <td className="px-4 py-2">{product.salePrice}</td>
-                <td className="px-4 py-2">{product.quantity}</td>
-                <td className="px-4 py-2">{product.salePrice - product.purchasePrice}</td>
+                <td className="lg:p-3 p-1 text-[14px]">{product.name}</td>
+                <td className="lg:p-3 p-1 text-[14px]">
+                  {product.purchasePrice}
+                </td>
+                <td className="lg:p-3 p-1 text-[14px]">{product.salePrice}</td>
+                <td className="lg:p-3 p-1 text-[14px]">{product.quantity}</td>
+                <td className="lg:p-3 p-1 text-[14px]">
+                  {product.salePrice - product.purchasePrice}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -135,14 +179,13 @@ const StockHouse = () => {
       </div>
 
       {/* Total Profit */}
-      <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md text-center">
-        <h2 className="text-xl font-semibold">Total Profit Today: {totalProfit}</h2>
-      </div>
+      {/* <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-md text-center">
+        <h2 className="text-xl font-semibold">
+          Total Profit Today: {totalProfit}
+        </h2>
+      </div> */}
     </div>
   );
 };
 
 export default StockHouse;
-
-
-
