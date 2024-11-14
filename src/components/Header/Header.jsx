@@ -12,7 +12,7 @@ const payment = [
 ];
 const expenses = [
   { name: "Daily Expenses", link: "/dailyExpenses" },
-  { name: "Monthly Expenses", link: "/DubaiPortExpenses" },
+  { name: "Dubai Port Expenses", link: "/DubaiPortExpenses" },
   { name: "Commission", link: "/commission" },
 ];
 
@@ -211,7 +211,7 @@ export default function Header() {
                     : "text-black hover:text-orange-600 transition"
                 }
               >
-                Purchase
+                Convertor
               </NavLink>
             </li>
             <li className="relative group">
