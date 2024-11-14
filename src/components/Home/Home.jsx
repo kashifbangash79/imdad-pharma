@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function Home() {
   const [payments, setPayments] = useState({
@@ -10,6 +11,20 @@ export default function Home() {
     Meezan: 0,
     Cash: 0,
   });
+
+  const [totalammount, setTotalammount] = useState({
+    totalAmount: 0
+  });
+
+  const [montlyPayments, setMonthlyPayments] = useState({
+    UBL: 0,
+    MCB: 0,
+    HBL: 0,
+    Khyber: 0,
+    Meezan: 0,
+    Cash: 0,
+  });
+
   const [loading, setLoading] = useState(true);
 
   // Fetch data from the database
@@ -28,14 +43,51 @@ export default function Home() {
           Meezan: data["Meezan Bank"] || 0,
           Cash: data["cash"] || 0,
         });
+
       } catch (error) {
         console.error("Error fetching payments:", error);
       } finally {
         setLoading(false);
       }
+
+        
+
+    };
+    const fetchMonthlyPayments = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/recievedPayment/monthly");
+        // console.log("Fetched monthly payments:", response.data);
+        const data = response.data;
+
+        setMonthlyPayments({
+          UBL: data["United Bank Limited (UBL)"] || 0,
+          MCB: data["MCB Bank Limited"]  || 0,
+          HBL: data["Habib Bank Limited (HBL)"] || 0,
+          Khyber: data["Bank of Khyber"] || 0,
+          Meezan: data["Meezan Bank"] || 0,
+          Cash: data["cash"] || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching monthly payments:", error);
+      }
+    };
+    const fetchTotalammount = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/recievedPayment/total-yearly");
+        // console.log("Fetched monthly payments:", response.data);
+        const data = response.data;
+
+        setTotalammount({
+          totalAmount: data["totalAmount"] || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching total ammount:", error);
+      }
     };
 
+    fetchTotalammount();
     fetchPayments();
+    fetchMonthlyPayments();
   }, []);
 
   const arrowUp = (
@@ -120,7 +172,8 @@ export default function Home() {
         IMDAD PHARMA 💊
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10 ">
+      <h1 className="text-xl font-bold text-[14px] mx-5">Daily Received Payments</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
   {[
     { label: "UBL", amount: payments.UBL, color: "text-blue-600" },
     { label: "MCB", amount: payments.MCB, color: "text-green-600" },
@@ -143,7 +196,57 @@ export default function Home() {
     </div>
   ))}
 </div>
-
+<h1 className="text-xl my-4 font-bold text-[14px] mx-5">Monthly Received Payments</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
+        <PaymentCard name="UBL" amount={montlyPayments.UBL} />
+        <PaymentCard name="MCB" amount={montlyPayments.MCB} />
+        <PaymentCard name="HBL" amount={montlyPayments.HBL} />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
+        <PaymentCard name="Khyber" amount={montlyPayments.Khyber} />
+        <PaymentCard name="Meezan" amount={montlyPayments.Meezan} />
+        <PaymentCard name="Cash" amount={montlyPayments.Cash} />
+      </div>
+      <h2 className="text-xl font-bold text-[14px] mx-5">Total Amount</h2>
+      
+      {/* Total Amount Card */}
+      <div className="grid grid-cols-1 mx-4 sm:mx-16 my-10">
+        <TotalAmountCard total={totalammount.totalAmount} />
+      </div>
     </div>
   );
 }
+const PaymentCard = ({ name, amount }) => {
+  return (
+    <div className="bg-orange-400 shadow-lg rounded-lg p-6 text-center text-white transition duration-300 transform hover:scale-105">
+    {/* Display the bank logo */}
+    <img 
+      src={`/images/${name.toLowerCase()}.png`} 
+      alt={`${name} logo`} 
+      className="h-10 mx-auto mb-2" 
+    />
+    <h3 className="text-lg font-medium">Monthly Received in {name}</h3>
+    <p className="text-2xl font-bold text-blue-600">
+      Rs. {amount}
+    </p>
+  </div>
+  );
+};
+
+
+// Total Amount Card Component
+const TotalAmountCard = ({ total }) => {
+  return (
+    <div className=" shadow-lg rounded-lg p-6 text-center bg-orange-500 text-white transition duration-300 transform hover:scale-100">
+      <img 
+        src={`/images/totalamount.png`} 
+        alt="Total Amount logo" 
+        className="h-10 mx-auto mb-2" 
+      />
+      <h3 className="text-lg font-medium">Total Received Amount</h3>
+      <p className="text-2xl font-bold text-green-600">
+        Rs. {total}
+      </p>
+    </div>
+  );
+};

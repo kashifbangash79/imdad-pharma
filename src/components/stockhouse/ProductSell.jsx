@@ -163,25 +163,48 @@ const AddTransaction = () => {
           </select>
         </div>
 
-        <div className="flex gap-1 h-[35px]">
-          <select
-            id="currency"
-            value={selectedQuantity}
-            onChange={(e) => setSelectedQuantity(e.target.value)}
-            className="w-full h-full p-1 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
-          >
-            <option value="Kg">Weight</option>
-            <option value="size">Size</option>
-            <option value="quantity">Quantity</option>
-          </select>
-          <input
-            id="conversionRate"
-            type="number"
-            value={totalQuantity}
-            onChange={(e) => setTotalQuantity(Number(e.target.value))}
-            className="w-full p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-        </div>
+        
+        <div className="flex flex-col mt-1">
+            {/* <p>Payment Amount:</p> */}
+            <div className="flex gap-1 sm:flex-row flex-col ">
+              {/* <select
+                id="currency"
+                value={selectedCurrency}
+                onChange={(e) => setSelectedCurrency(e.target.value)}
+                className="w-full h-full p-1 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 mb-4"
+              >
+                <option value="Kg">Weight</option>
+                <option value="size">Size</option>
+                <option value="quantity">Quantity</option>
+              </select> */}
+
+              <input
+                id="conversionRate"
+                type="text"
+                placeholder="Enter size..."
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                id="conversionRate"
+                type="text"
+                placeholder="Enter weight..."
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                id="conversionRate"
+                type="text"
+                placeholder="Enter quantity..."
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </div>
+       
 
         <div className="grid grid-cols-2 gap-4">
           <div>
