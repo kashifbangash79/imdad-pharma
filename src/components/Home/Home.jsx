@@ -2,21 +2,40 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  // States to hold amounts fetched from the database
-  const [totalAmount, setTotalAmount] = useState(1000000);
-  const [todayReceived, setTodayReceived] = useState(400000);
-  const [todaySent, setTodaySent] = useState(456970);
+  const [payments, setPayments] = useState({
+    UBL: 0,
+    MCB: 0,
+    HBL: 0,
+    Khyber: 0,
+    Meezan: 0,
+    Cash: 0,
+  });
+  const [loading, setLoading] = useState(true);
 
   // Fetch data from the database
   useEffect(() => {
-    // Replace with your API calls to fetch the data
-    fetch("/api/amounts")
-      .then((response) => response.json())
-      .then((data) => {
-        setTotalAmount(data.totalAmount);
-        setTodayReceived(data.todayReceived);
-        setTodaySent(data.todaySent);
-      });
+    const fetchPayments = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/recievedPayment/today");
+        const data = await response.json();
+        console.log("Fetched payments:", data);
+        // Set state with the fetched data
+        setPayments({
+          UBL: data["United Bank Limited (UBL)"] || 0,
+          MCB: data["MCB Bank Limited"]  || 0,
+          HBL: data["Habib Bank Limited (HBL)"] || 0,
+          Khyber: data["Bank of Khyber"] || 0,
+          Meezan: data["Meezan Bank"] || 0,
+          Cash: data["cash"] || 0,
+        });
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPayments();
   }, []);
 
   const arrowUp = (
@@ -47,17 +66,22 @@ export default function Home() {
     </svg>
   );
 
+  // If loading, show a loading message
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="mx-auto w-full max-w-7xl">
-      <aside className=" overflow-hidden text-black rounded-lg  mx-2 lg:py-16 flex  lg:flex-row flex-col justify-between items-center lg:gap-0 gap-14 ">
-        <div className="    lg:order-1 order-2 lg:ml-4       ">
+      <aside className="overflow-hidden text-black rounded-lg mx-2 lg:py-16 flex lg:flex-row flex-col justify-between items-center lg:gap-0 gap-14 ">
+        <div className="lg:order-1 order-2 lg:ml-4">
           <img
             className="w-96"
             src="https://i.ibb.co/5BCcDYB/Remote2.png"
             alt="image1"
           />
         </div>
-        <div className=" px-4 sm:px-6 lg:px-8  lg:order-2 order-1  pt-16  ">
+        <div className="px-4 sm:px-6 lg:px-8 lg:order-2 order-1 pt-16">
           <div className="max-w-xl sm:mt-1 mt-20 space-y-8 text-center sm:text-right sm:ml-auto">
             <h2 className="text-4xl font-bold sm:text-5xl">
               IMDAD PHARMA 💊
@@ -84,7 +108,7 @@ export default function Home() {
         </div>
       </aside>
 
-      <div className="md:grid place-items-center sm:mt-20 hidden ">
+      <div className="md:grid place-items-center sm:mt-20 hidden">
         <img
           className="sm:w-96 w-48"
           src="https://i.ibb.co/2M7rtLk/Remote1.png"
@@ -96,58 +120,30 @@ export default function Home() {
         IMDAD PHARMA 💊
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium"> Today Recieved in UBL</h3>
-          <p className="text-2xl font-bold text-green-600">
-            {totalAmount >= 0 ? arrowUp : arrowDown} Rs. {totalAmount}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Received in MCB</h3>
-          <p className="text-2xl font-bold text-blue-600">
-            {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Recieved in HBL</h3>
-          <p className="text-2xl font-bold text-red-600">
-            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10">
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Recieved in Khyber</h3>
-          <p className="text-2xl font-bold text-green-600">
-            {totalAmount >= 0 ? arrowUp : arrowDown} Rs. {totalAmount}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Recieved in Meezan</h3>
-          <p className="text-2xl font-bold text-blue-600">
-            {todayReceived >= 0 ? arrowUp : arrowDown} Rs. {todayReceived}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Today Recieved in CASH</h3>
-          <p className="text-2xl font-bold text-red-600">
-            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Total Send Today</h3>
-          <p className="text-2xl font-bold text-red-600">
-            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
-          </p>
-        </div>
-        <div className="bg-white shadow-lg rounded-lg p-6 text-center">
-          <h3 className="text-lg font-medium">Total Amount</h3>
-          <p className="text-2xl font-bold text-red-600">
-            {todaySent >= 0 ? arrowUp : arrowDown} Rs. {todaySent}
-          </p>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mx-4 sm:mx-16 my-10 ">
+  {[
+    { label: "UBL", amount: payments.UBL, color: "text-blue-600" },
+    { label: "MCB", amount: payments.MCB, color: "text-green-600" },
+    { label: "HBL", amount: payments.HBL, color: "text-purple-600" },
+    { label: "KHYBER", amount: payments.Khyber, color: "text-yellow-600" },
+    { label: "Meezan", amount: payments.Meezan, color: "text-indigo-600" },
+    { label: "CASH", amount: payments.Cash, color: "text-red-600" },
+  ].map((bank, index) => (
+    <div key={index} className="bg-orange-300 shadow-lg rounded-lg p-6 text-center text-white transition duration-300 transform hover:scale-105">
+      <h3 className="text-lg font-medium flex justify-center items-center space-x-2">
+        <img src={`/images/${bank.label}.png`} alt={`${bank.label} logo`} className="w-8 h-8 rounded-lg" />
+        <span>Today Received in {bank.label}</span>
+      </h3>
+      <p className={`text-2xl font-bold ${bank.color} flex items-center justify-center mt-4`}>
+        <span className="mr-2 transition-transform duration-300 transform">
+          {bank.amount >= 0 ? arrowUp : arrowDown}
+        </span>
+        Rs. {bank.amount.toLocaleString()}
+      </p>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 }

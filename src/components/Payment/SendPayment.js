@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 const topPakistaniBanks = [
   "Habib Bank Limited (HBL)",
   "United Bank Limited (UBL)",
+  "Bank of Khyber",
   "National Bank of Pakistan (NBP)",
   "MCB Bank Limited",
   "Allied Bank Limited (ABL)",
@@ -30,15 +33,14 @@ const Payment = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [payments, setPayments] = useState([]);
 
+  const apiUrl = "http://localhost:5000/api/sendpayment";
+
   useEffect(() => {
     // Fetch payments from the backend on component mount
     const fetchPayments = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:5000/api/recievedPayment"
-        ); // Use your correct API endpoint
-        const data = await response.json();
-        setPayments(data);
+        const response = await axios.get(apiUrl);
+        setPayments(response.data);
       } catch (error) {
         console.error("Error fetching payments:", error);
       }
@@ -62,36 +64,16 @@ const Payment = () => {
     try {
       if (editPaymentId !== null) {
         // Update existing payment
-        const response = await fetch(
-          `http://localhost:5000/api/recievedPayment/${editPaymentId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentData),
-          }
-        );
-        const updatedPayment = await response.json();
+        const response = await axios.put(`${apiUrl}/${editPaymentId}`, paymentData);
         setPayments(
           payments.map((payment) =>
-            payment._id === editPaymentId ? updatedPayment : payment
+            payment._id === editPaymentId ? response.data : payment
           )
         );
       } else {
-        // Create a new payment
-        const response = await fetch(
-          "http://localhost:5000/api/recievedPayment",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentData),
-          }
-        );
-        const newPayment = await response.json();
-        setPayments([...payments, newPayment]);
+        // Create new payment
+        const response = await axios.post(apiUrl, paymentData);
+        setPayments([...payments, response.data]);
       }
       resetForm();
     } catch (error) {
@@ -101,9 +83,7 @@ const Payment = () => {
 
   const handleDelete = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/recievedPayment/${id}`, {
-        method: "DELETE",
-      });
+      await axios.delete(`${apiUrl}/${id}`);
       setPayments(payments.filter((payment) => payment._id !== id));
     } catch (error) {
       console.error("Error deleting payment:", error);
@@ -143,11 +123,11 @@ const Payment = () => {
   };
 
   const filteredPayments = payments.filter((payment) =>
-    payment.recipientName.toLowerCase().includes(searchTerm.toLowerCase())
+    payment.recipientName.toLowerCase().includes(searchTerm)
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
+    <div className="p-6 max-w-6xl mx-auto bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Send Payment</h2>
 
       <form onSubmit={handlePaymentSubmit} className="mb-8">
@@ -363,9 +343,12 @@ const Payment = () => {
                   className="border-b border-gray-200 hover:bg-gray-50"
                 >
                   <td className="py-3 px-4">
-                    {payment.paymentType.charAt(0).toUpperCase() +
-                      payment.paymentType.slice(1)}
+                    {payment.paymentType === "cash"
+                      ? payment.paymentType.charAt(0).toUpperCase() +
+                        payment.paymentType.slice(1)
+                      : payment.bankName}
                   </td>
+
                   <td className="py-3 px-4">
                     {payment.paymentType === "cash"
                       ? payment.payerName
@@ -376,10 +359,10 @@ const Payment = () => {
                     {new Date(payment.transactionDate).toLocaleDateString()}
                   </td>
                   <td className="py-3 px-4">{payment.amount}</td>
-                  <td className="py-3 px-4 space-x-2">
+                  <td className="py-3 px-4 space-x-1 ">
                     <button
                       onClick={() => handleEdit(payment)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
+                      className="bg-yellow-500 text-white px-4 mx-1 py-1 rounded-md hover:bg-yellow-600 transition  sm:my-0 my-1"
                     >
                       Edit
                     </button>

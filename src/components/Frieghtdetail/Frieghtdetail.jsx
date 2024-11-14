@@ -124,10 +124,10 @@ export default function FreightDetail() {
                     className="w-full bg-white p-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                     required
                   >
-                    <option value="In Dubai Port">In Transit</option>
-                    <option value="In Karachi">Delivered</option>
-                    <option value="In Lahore">Delayed</option>
-                    <option value="In Peshawar">Delayed</option>
+                    <option value="In Dubai Port">In Dubai Port</option>
+                    <option value="In Karachi">In Karachi</option>
+                    <option value="In Lahore">In Lahore</option>
+                    <option value="In Peshawar">In Peshawar</option>
                   </select>
                 ) : (
                   <input

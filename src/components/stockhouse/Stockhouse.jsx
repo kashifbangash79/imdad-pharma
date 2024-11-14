@@ -119,8 +119,8 @@ const StockHouse = () => {
           /> */}
           <div className="flex flex-col mt-1">
             {/* <p>Payment Amount:</p> */}
-            <div className="flex gap-1 h-[35px] ">
-              <select
+            <div className="flex gap-1 sm:flex-row flex-col ">
+              {/* <select
                 id="currency"
                 value={selectedCurrency}
                 onChange={(e) => setSelectedCurrency(e.target.value)}
@@ -129,13 +129,31 @@ const StockHouse = () => {
                 <option value="Kg">Weight</option>
                 <option value="size">Size</option>
                 <option value="quantity">Quantity</option>
-              </select>
+              </select> */}
+
               <input
                 id="conversionRate"
                 type="text"
+                placeholder="Enter size..."
                 // value={conversionRate}
                 // onChange={(e) => setConversionRate(e.target.value)}
-                className="w-full p-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                id="conversionRate"
+                type="text"
+                placeholder="Enter weight..."
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+              <input
+                id="conversionRate"
+                type="text"
+                placeholder="Enter quantity..."
+                // value={conversionRate}
+                // onChange={(e) => setConversionRate(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
           </div>
@@ -153,11 +171,13 @@ const StockHouse = () => {
         <table className="table-auto w-full text-left bg-white shadow-md rounded-lg">
           <thead className="bg-blue-400 text-white">
             <tr>
-              <th className="lg:p-3 p-1 text-[14px]  ">Name</th>
-              <th className="lg:p-3 p-1 text-[14px] ">Purchase Price</th>
-              <th className="lg:p-3 p-1 text-[14px] ">Sale Price</th>
-              <th className="lg:p-3 p-1 text-[14px] ">qty/size/kg</th>
-              <th className="lg:p-3 p-1 text-[14px] ">Profit per Item</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px]  ">Name</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">Purchase Price</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">Sale Price</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">size</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">quantity</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">weight</th>
+              <th className="lg:p-3 p-1 sm:text-[14px] text-[10px] ">Profit per Item</th>
             </tr>
           </thead>
           <tbody>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 const topPakistaniBanks = [
   "Habib Bank Limited (HBL)",
   "United Bank Limited (UBL)",
+  "Bank of Khyber",
   "National Bank of Pakistan (NBP)",
   "MCB Bank Limited",
   "Allied Bank Limited (ABL)",
@@ -55,7 +56,7 @@ const Payment = () => {
       recipientName,
       transactionDate,
       amount: paymentType === "cash" ? cashAmount : bankAmount,
-      bankName: selectedBank,
+      bankName: selectedBank || "cash",
       senderName,
     };
 
@@ -147,7 +148,7 @@ const Payment = () => {
   );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white shadow-md rounded-lg">
+    <div className="p-6 max-w-6xl mx-auto bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         Received Payment
       </h2>
@@ -364,9 +365,11 @@ const Payment = () => {
                   key={payment._id}
                   className="border-b border-gray-200 hover:bg-gray-50"
                 >
-                  <td className="py-3 px-4">
-                    {payment.paymentType.charAt(0).toUpperCase() +
-                      payment.paymentType.slice(1)}
+                   <td className="py-3 px-4">
+                    {payment.paymentType === "cash"
+                      ? payment.paymentType.charAt(0).toUpperCase() +
+                        payment.paymentType.slice(1)
+                      : payment.bankName}
                   </td>
                   <td className="py-3 px-4">
                     {payment.paymentType === "cash"
@@ -378,10 +381,10 @@ const Payment = () => {
                     {new Date(payment.transactionDate).toLocaleDateString()}
                   </td>
                   <td className="py-3 px-4">{payment.amount}</td>
-                  <td className="py-3 px-4 space-x-2">
+                  <td className="py-3 px-4 space-x-1">
                     <button
                       onClick={() => handleEdit(payment)}
-                      className="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition"
+                      className="bg-yellow-500 text-white px-4 mx-1 py-1 rounded-md hover:bg-yellow-600 transition sm:my-0 my-1"
                     >
                       Edit
                     </button>
